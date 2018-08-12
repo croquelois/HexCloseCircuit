@@ -11,11 +11,19 @@ public class Board : MonoBehaviour {
     public Text score;
     public Slider timer;
     float time = 0.0f;
+    BoardModel board = new BoardModel();
     
     Piece current;
     List<Transform> shadow = new List<Transform>();
     List<Vector2> validPositions = new List<Vector2>();
-            
+    Dictionary<Pos,Transform> transforms = new Dictionary<Pos,Transform>();
+    
+    void CreateBlocks(List<BlockModel> blocks){
+        foreach(BlockModel block in blocks)
+            transforms.Add(new Pos(block.x,block.z), CreateBlock(block));
+        board.Add(blocks);
+    }
+    
     Transform CreateBlock(BlockModel model){
         Transform instance = Instantiate(piecePrefab);
         instance.gameObject.GetComponent<BlockView>().dir1 = model.dir1;
@@ -43,6 +51,19 @@ public class Board : MonoBehaviour {
     }
     
     private void Start () {
+        /*
+        BoardModelTest test = new BoardModelTest();
+        test.Main();
+        return;
+        */
+        board.removeBlock += (o, ev) => {
+            foreach(BlockModel block in ev.Blocks){
+                Pos pos = new Pos(block.x,block.z);
+                Destroy(transforms[pos].gameObject);
+                transforms.Remove(pos);
+            }
+        };
+        
         for(int z=-1;z<boardHeight+1;z++)
             CreateBorder(-1,z);
         for(int x=0;x<boardWidth;x++){
@@ -54,9 +75,14 @@ public class Board : MonoBehaviour {
         }
         for(int z=0;z<boardHeight;z++)
             CreateBorder(boardWidth,z);
-        CreateBlock(new BlockModel(3,3,HexDirection.NE,HexDirection.E));
-        CreateBlock(new BlockModel(5,4,HexDirection.W,HexDirection.E));
-        CreateBlock(new BlockModel(4,4,HexDirection.SW,HexDirection.E));
+        List<BlockModel> blocks = new List<BlockModel>();
+        blocks.Add(new BlockModel(4,5,HexDirection.SW,HexDirection.E));
+        blocks.Add(new BlockModel(5,5,HexDirection.W,HexDirection.SE));
+        blocks.Add(new BlockModel(4,4,HexDirection.SE,HexDirection.NE));
+        blocks.Add(new BlockModel(6,4,HexDirection.SW,HexDirection.NW));
+        blocks.Add(new BlockModel(4,3,HexDirection.NW,HexDirection.E));
+        //blocks.Add(new BlockModel(5,3,HexDirection.NE,HexDirection.W));
+        CreateBlocks(blocks);
         
         current = transform.Find("Current").gameObject.GetComponent<Piece>();
         newPiece();
@@ -96,8 +122,8 @@ public class Board : MonoBehaviour {
     void newPiece(){
         current.clear();
         current.add(new BlockModel(0,0,HexDirection.SW,HexDirection.E));
-        current.add(new BlockModel(1,0,HexDirection.SW,HexDirection.E));
-        current.add(new BlockModel(0,1,HexDirection.SW,HexDirection.E));
+        /*current.add(new BlockModel(1,0,HexDirection.SW,HexDirection.E));
+        current.add(new BlockModel(0,1,HexDirection.SW,HexDirection.E));*/
         current.moveToCenter();
     }
     
@@ -106,6 +132,9 @@ public class Board : MonoBehaviour {
     
     void Update()
     {
+        if(current == null)
+            return;
+        
         current.incRotation(Input.GetAxis("Mouse ScrollWheel"));
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
@@ -118,12 +147,11 @@ public class Board : MonoBehaviour {
             /*foreach(BlockModel blockModel in list)
                 shadow.Add(CreateBlock(blockModel));*/
             if(Input.GetButtonDown("Fire1")){
-                foreach(BlockModel blockModel in list)
-                    CreateBlock(blockModel);
+                CreateBlocks(list);
             }
         }
         
-        time += Time.deltaTime;
+        time += Time.deltaTime * 0.01f;
         if(time > 1.0f){
             newPiece();
             time = 0.0f;

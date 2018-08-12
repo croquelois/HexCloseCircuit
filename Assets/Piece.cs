@@ -46,6 +46,8 @@ public class Piece : MonoBehaviour {
     }
     
     public void clear(){
+        r = 0;
+        transform.rotation = Quaternion.Euler(0, r, 0);
         elem.Clear();
         foreach (Transform child in transform)
             GameObject.Destroy(child.gameObject);
