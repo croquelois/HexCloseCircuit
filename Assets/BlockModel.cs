@@ -1,5 +1,5 @@
 ﻿
-public struct BlockModel {
+public class BlockModel {
     public int x;
     public int z;
     public HexDirection dir1;
