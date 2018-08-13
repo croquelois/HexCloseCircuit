@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +9,7 @@ public class Board : MonoBehaviour {
     public int boardWidth = 20;
     public Transform piecePrefab;
     public Transform borderPrefab;
+    public Transform placePrefab;
     public Text score;
     public Slider timer;
     BoardModel board = new BoardModel();
@@ -15,7 +17,9 @@ public class Board : MonoBehaviour {
     Piece current;
     List<Transform> shadow = new List<Transform>();
     List<Vector2> validPositions = new List<Vector2>();
+    HashSet<PlaceView> selectedPlaces = new HashSet<PlaceView>();
     Dictionary<Pos,Transform> transforms = new Dictionary<Pos,Transform>();
+    Dictionary<Pos,PlaceView> places = new Dictionary<Pos,PlaceView>();
     
     void CreateBlocks(List<BlockModel> blocks, bool init = false){
         foreach(BlockModel block in blocks)
@@ -45,11 +49,14 @@ public class Board : MonoBehaviour {
     }
     
     Transform CreatePlace(int x, int z){
+        Transform instance = Instantiate(placePrefab);
         float ro = HexMetrics.outerRadius;
         float ri = HexMetrics.innerRadius;
         Vector2 pos = new Vector2(2f*ri*(((float)x)+(z%2==0?0.0f:0.5f)),1.5f*ro*(float)z);
+        instance.localPosition = new Vector3(pos.x,0f,pos.y);
         validPositions.Add(pos);
-        return null;
+        places.Add(new Pos(x,z), instance.Find("Mesh").gameObject.GetComponent<PlaceView>());
+        return instance;
     }
     
     private void Start () {
@@ -70,14 +77,14 @@ public class Board : MonoBehaviour {
         }
         for(int z=0;z<boardHeight;z++)
             CreateBorder(boardWidth,z);
-        List<BlockModel> blocks = new List<BlockModel>();
+        /*List<BlockModel> blocks = new List<BlockModel>();
         blocks.Add(new BlockModel(4,5,HexDirection.SW,HexDirection.E));
         blocks.Add(new BlockModel(5,5,HexDirection.W,HexDirection.SE));
         blocks.Add(new BlockModel(4,4,HexDirection.SE,HexDirection.NE));
         blocks.Add(new BlockModel(6,4,HexDirection.SW,HexDirection.NW));
         blocks.Add(new BlockModel(4,3,HexDirection.NW,HexDirection.E));
-        //blocks.Add(new BlockModel(5,3,HexDirection.NE,HexDirection.W));
-        CreateBlocks(blocks, true);
+        blocks.Add(new BlockModel(5,3,HexDirection.NE,HexDirection.W));
+        CreateBlocks(blocks, true);*/
         
         board.removeBlock += (o, ev) => {
             foreach(BlockModel block in ev.Blocks){
@@ -110,24 +117,19 @@ public class Board : MonoBehaviour {
         min -= HexMetrics.outerRadius;
         min /= HexMetrics.outerRadius;
         return Mathf.Max(0f, min);
-        /*float ro = HexMetrics.outerRadius;
-        float ri = HexMetrics.innerRadius;
-        int zi = Mathf.RoundToInt(z/(1.5f*ro));
-        int xi = Mathf.RoundToInt(x/(2f*ri) - (zi%2==0?0.0f:0.5f));
-        if(xi >= 0 && xi < boardWidth && zi >= 0 && zi < boardHeight)
-            return 0f;
-        
-        float dx = 0f;
-        float dz = 0f;
-        if(xi < 0)
-            dx += -(float)xi;
-        if(xi >= boardWidth)
-            dx += (float)(xi-boardWidth);
-        if(zi < 0)
-            dz += -(float)zi;
-        if(zi >= boardHeight)
-            dz += (float)(zi-boardHeight);
-        return Mathf.Sqrt(dx*dx+dz*dz);*/
+    }
+    
+    void doShadow(List<BlockModel> list){
+        PlaceView place;
+        HashSet<PlaceView> newSelectedPlaces = new HashSet<PlaceView>();
+        foreach(BlockModel block in list)
+            if(places.TryGetValue(new Pos(block.x,block.z),out place))
+                newSelectedPlaces.Add(place);
+        foreach(PlaceView placeToSelect in newSelectedPlaces.Except(selectedPlaces))
+            placeToSelect.Selected(true);
+        foreach(PlaceView placeToUnselect in selectedPlaces.Except(newSelectedPlaces))
+            placeToUnselect.Selected(false);
+        selectedPlaces = newSelectedPlaces;
     }
     
     void Awake () {
@@ -147,8 +149,7 @@ public class Board : MonoBehaviour {
                 Destroy(tr.gameObject);
             shadow.Clear();
             List<BlockModel> list = current.getShadow();
-            /*foreach(BlockModel blockModel in list)
-                shadow.Add(CreateBlock(blockModel));*/
+            doShadow(list);
             if(Input.GetButtonDown("Fire1")){
                 CreateBlocks(list);
             }

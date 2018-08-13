@@ -55,10 +55,10 @@
      <Compile Include="Assets\BoardViewBorder.cs" />
      <Compile Include="Assets\HexEnum.cs" />
      <Compile Include="Assets\HexMetrics.cs" />
-     <Compile Include="Assets\HexPlace.cs" />
      <Compile Include="Assets\Outside.cs" />
      <Compile Include="Assets\Piece.cs" />
      <Compile Include="Assets\PiecesLoader.cs" />
+     <Compile Include="Assets\PlaceView.cs" />
      <Compile Include="Assets\Pos.cs" />
      <None Include="Assets\Shaders\liquid.shader" />
  <Reference Include="UnityEngine.UI">
