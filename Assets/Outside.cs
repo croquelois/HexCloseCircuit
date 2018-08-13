@@ -40,7 +40,7 @@ public class Outside : MonoBehaviour {
     void fillYCoord(ref Vector3 v){
         float d = 10f*board.distanceTo(v.x,v.z);
         if(d == 0f)
-            v.y = 0f;
+            v.y = -0.1f;
         else
             v.y = d * noise(v.x,v.z); //(d > 10f ? 10f : d)
     }
