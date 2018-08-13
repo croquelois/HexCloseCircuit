@@ -10,7 +10,6 @@ public class Board : MonoBehaviour {
     public Transform borderPrefab;
     public Text score;
     public Slider timer;
-    float time = 0.0f;
     BoardModel board = new BoardModel();
     
     Piece current;
@@ -18,10 +17,13 @@ public class Board : MonoBehaviour {
     List<Vector2> validPositions = new List<Vector2>();
     Dictionary<Pos,Transform> transforms = new Dictionary<Pos,Transform>();
     
-    void CreateBlocks(List<BlockModel> blocks){
+    void CreateBlocks(List<BlockModel> blocks, bool init = false){
         foreach(BlockModel block in blocks)
             transforms.Add(new Pos(block.x,block.z), CreateBlock(block));
-        board.Add(blocks);
+        if(init)
+            board.Add(blocks);
+        else
+            board.Push(blocks);
     }
     
     Transform CreateBlock(BlockModel model){
@@ -56,13 +58,6 @@ public class Board : MonoBehaviour {
         test.Main();
         return;
         */
-        board.removeBlock += (o, ev) => {
-            foreach(BlockModel block in ev.Blocks){
-                Pos pos = new Pos(block.x,block.z);
-                Destroy(transforms[pos].gameObject);
-                transforms.Remove(pos);
-            }
-        };
         
         for(int z=-1;z<boardHeight+1;z++)
             CreateBorder(-1,z);
@@ -82,13 +77,30 @@ public class Board : MonoBehaviour {
         blocks.Add(new BlockModel(6,4,HexDirection.SW,HexDirection.NW));
         blocks.Add(new BlockModel(4,3,HexDirection.NW,HexDirection.E));
         //blocks.Add(new BlockModel(5,3,HexDirection.NE,HexDirection.W));
-        CreateBlocks(blocks);
+        CreateBlocks(blocks, true);
+        
+        board.removeBlock += (o, ev) => {
+            foreach(BlockModel block in ev.Blocks){
+                Pos pos = new Pos(block.x,block.z);
+                Destroy(transforms[pos].gameObject);
+                transforms.Remove(pos);
+            }
+        };
         
         current = transform.Find("Current").gameObject.GetComponent<Piece>();
-        newPiece();
+        board.newPiece += (o, ev) => {
+            Debug.Log("new piece called");
+            current.clear();
+            foreach(BlockModel block in ev.Blocks)
+                current.add(block);
+            current.moveToCenter();
+        };
+        
         Outside outside = transform.Find("Outside").gameObject.GetComponent<Outside>();
         outside.board = this;
         outside.Triangulate(-5,boardWidth+5,-5,boardHeight+5);
+        
+        board.Start();
     }
     
     public float distanceTo(float x, float z){
@@ -120,11 +132,6 @@ public class Board : MonoBehaviour {
     }
     
     void newPiece(){
-        current.clear();
-        current.add(new BlockModel(0,0,HexDirection.SW,HexDirection.E));
-        /*current.add(new BlockModel(1,0,HexDirection.SW,HexDirection.E));
-        current.add(new BlockModel(0,1,HexDirection.SW,HexDirection.E));*/
-        current.moveToCenter();
     }
     
     void Awake () {
@@ -150,12 +157,7 @@ public class Board : MonoBehaviour {
                 CreateBlocks(list);
             }
         }
-        
-        time += Time.deltaTime * 0.01f;
-        if(time > 1.0f){
-            newPiece();
-            time = 0.0f;
-        }
-        timer.value = time;
+        board.Update(Time.deltaTime);
+        timer.value = board.Time;
     }
 }

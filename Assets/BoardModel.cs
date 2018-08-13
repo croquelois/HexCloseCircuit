@@ -33,12 +33,23 @@ public class ListOfBlockEventArgs : EventArgs {
 }
 
 public class BoardModel {
+    PiecesLoader pieces = new PiecesLoader();
     Dictionary<Pos,BlockModel> grid = new Dictionary<Pos,BlockModel>();
     int score = 0;
+    int life = 1;
+    float time = 0f;
+    
+    public float Time {
+        get {
+            return time;
+        }
+    }
     
     public event EventHandler<EventArgs> loopCompleted = delegate {};
     public event EventHandler<ScoreEventArgs> updateScore = delegate {};
     public event EventHandler<ListOfBlockEventArgs> removeBlock = delegate {};
+    public event EventHandler<ListOfBlockEventArgs> newPiece = delegate {};
+    public event EventHandler<EventArgs> gameOver = delegate {};
     
     void Remove(List<BlockModel> blocks){
         foreach(BlockModel block in blocks)
@@ -49,6 +60,10 @@ public class BoardModel {
     public void Add(List<BlockModel> blocks){
         foreach(BlockModel block in blocks)
             grid.Add(new Pos(block.x,block.z), block);
+    }
+    
+    public void Push(List<BlockModel> blocks){
+        Add(blocks);
         foreach(BlockModel block in blocks){
             CheckConnectionResult res = CheckConnection(block.x,block.z);
             if(res.isLoop){
@@ -58,6 +73,23 @@ public class BoardModel {
                 updateScore(this, new ScoreEventArgs(score));
             }
         }
+        newPiece(this, new ListOfBlockEventArgs(pieces.Get()));
+    }
+    
+    public void Update(float dt){
+        time += dt * 0.01f;
+        if(time > 1.0f){
+            life--;
+            if(life == 0)
+                gameOver(this, new EventArgs());
+            newPiece(this, new ListOfBlockEventArgs(pieces.Get()));
+            time = 0.0f;
+        }
+    }
+    
+    public void Start(){
+        pieces.Load();
+        newPiece(this, new ListOfBlockEventArgs(pieces.Get()));
     }
     
     BlockWithDir GetNext(BlockWithDir prev){

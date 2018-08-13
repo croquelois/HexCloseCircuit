@@ -58,6 +58,7 @@
      <Compile Include="Assets\HexPlace.cs" />
      <Compile Include="Assets\Outside.cs" />
      <Compile Include="Assets\Piece.cs" />
+     <Compile Include="Assets\PiecesLoader.cs" />
      <Compile Include="Assets\Pos.cs" />
      <None Include="Assets\Shaders\liquid.shader" />
  <Reference Include="UnityEngine.UI">
