@@ -7,6 +7,11 @@ public class PiecesLoader {
     
     public void Load(){
         pieces.Add(new List<BlockModel>{
+            new BlockModel(0,0,HexDirection.SW,HexDirection.E),
+            new BlockModel(1,0,HexDirection.W,HexDirection.E),
+            new BlockModel(2,0,HexDirection.W,HexDirection.SW)
+        });
+        pieces.Add(new List<BlockModel>{
             new BlockModel(0,0,HexDirection.SW,HexDirection.NE),
             new BlockModel(1,0,HexDirection.NW,HexDirection.SE),
             new BlockModel(0,1,HexDirection.SE,HexDirection.SW)
@@ -23,7 +28,6 @@ public class PiecesLoader {
     }
     
     public List<BlockModel> Get(){
-        Debug.Log(Random.Range(0, pieces.Count));
         return pieces[Random.Range(0, pieces.Count)];
     }
 }

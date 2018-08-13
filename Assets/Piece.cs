@@ -17,7 +17,9 @@ public class Piece : MonoBehaviour {
         List<BlockModel> list = new List<BlockModel>();
         int incR = Mathf.RoundToInt(r * 6f / 360f);
         foreach(PosAndObject pno in elem){
-            Vector3 pos = (pno.obj.localPosition + transform.localPosition);
+            Vector3 pos = (Quaternion.Euler(0, incR*360f/6f, 0)*pno.obj.localPosition + transform.localPosition);
+            //
+            //transform.InverseTransformPoint(pno.obj.position) + transform.localPosition;
             float X = pos.x;
             float Z = pos.z;
             float ro = HexMetrics.outerRadius;
@@ -27,7 +29,6 @@ public class Piece : MonoBehaviour {
             HexDirection dir1 = (HexDirection)((((int)pno.model.dir1) + incR) % 6);
             HexDirection dir2 = (HexDirection)((((int)pno.model.dir2) + incR) % 6);
             list.Add(new BlockModel(x, z, dir1, dir2));
-            
         }
         return list;
     }

@@ -89,7 +89,6 @@ public class Board : MonoBehaviour {
         
         current = transform.Find("Current").gameObject.GetComponent<Piece>();
         board.newPiece += (o, ev) => {
-            Debug.Log("new piece called");
             current.clear();
             foreach(BlockModel block in ev.Blocks)
                 current.add(block);
@@ -129,9 +128,6 @@ public class Board : MonoBehaviour {
         if(zi >= boardHeight)
             dz += (float)(zi-boardHeight);
         return Mathf.Sqrt(dx*dx+dz*dz);*/
-    }
-    
-    void newPiece(){
     }
     
     void Awake () {
