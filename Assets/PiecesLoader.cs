@@ -94,10 +94,18 @@ public class PiecesLoader {
         });
     }
     int RandomLength(){
-        int ret = 1;
-        while(Random.value < 0.5)
-            ret += 1;
-        return ret;
+        float v = Random.value;
+        if(v < 0.3)
+            return 1; // 30%
+        if(v < 0.6)
+            return 2; // 30%
+        if(v < 0.8)
+            return 3; // 20%
+        if(v < 0.9)
+            return 4; // 10%
+        if(v < 0.9)
+            return 5; // 5%
+        return 6; // 5%
     }
     public List<BlockModel> Get(){
         //return pieces[Random.Range(0, pieces.Count)];

@@ -129,6 +129,16 @@ public class Board : MonoBehaviour {
     void Awake () {
     }
     
+    bool IsOkay(List<BlockModel> list){
+        foreach(BlockModel block in list){
+            if(!places.Exist(block.x, block.z))
+                return false;
+            if(transforms.Exist(block.x, block.z))
+                return false;
+        }
+        return true;        
+    }
+    
     void Update()
     {
         if(current == null)
@@ -145,7 +155,8 @@ public class Board : MonoBehaviour {
             List<BlockModel> list = current.GetShadow();
             doShadow(list);
             if(Input.GetButtonDown("Fire1")){
-                CreateBlocks(list);
+                if(IsOkay(list))
+                    CreateBlocks(list);
             }
         }
         board.Update(Time.deltaTime);
