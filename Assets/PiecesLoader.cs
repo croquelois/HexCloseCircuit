@@ -49,18 +49,23 @@ public class PiecesLoader {
         int nx,nz;
         BlockModel cur = new BlockModel(x,z,dir1,dir2);
         grid.Add(x,z,cur);
+        MoveNextPos(x,z,dir1,out nx,out nz);
+        grid.Add(nx,nz,cur); // to avoid edge case
         ret.Add(cur);
         MoveNextPos(x,z,dir2,out nx,out nz);
         for(int i=1;i<len;i++){
             x = nx;
             z = nz;
             dir1 = dir2.Opposite();
+            int nbTryLeft = 25;
             do {
-                dir2 = (HexDirection)Random.Range(0, 6);
-                if(dir1 == dir2)
-                    continue;
+                dir2 = dir1;
+                while(dir1 == dir2)
+                    dir2 = (HexDirection)Random.Range(0, 6);
                 MoveNextPos(x,z,dir2,out nx,out nz);
-            }while(grid.Exist(nx,nz));
+            }while(grid.Exist(nx,nz) && --nbTryLeft > 0);
+            if(nbTryLeft == 0)
+                return null;
             cur = new BlockModel(x,z,dir1,dir2);
             grid.Add(x,z,cur);
             ret.Add(cur);
@@ -88,9 +93,17 @@ public class PiecesLoader {
             new BlockModel(0,0,HexDirection.E,HexDirection.SE)
         });
     }
-    
+    int RandomLength(){
+        int ret = 1;
+        while(Random.value < 0.5)
+            ret += 1;
+        return ret;
+    }
     public List<BlockModel> Get(){
         //return pieces[Random.Range(0, pieces.Count)];
-        return Generate(2);
+        List<BlockModel> ret = null;
+        while(ret == null)
+            ret = Generate(RandomLength());
+        return ret;
     }
 }
