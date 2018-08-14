@@ -18,12 +18,12 @@ public class Board : MonoBehaviour {
     List<Transform> shadow = new List<Transform>();
     List<Vector2> validPositions = new List<Vector2>();
     HashSet<PlaceView> selectedPlaces = new HashSet<PlaceView>();
-    Dictionary<Pos,Transform> transforms = new Dictionary<Pos,Transform>();
-    Dictionary<Pos,PlaceView> places = new Dictionary<Pos,PlaceView>();
+    Grid<Transform> transforms = new Grid<Transform>();
+    Grid<PlaceView> places = new Grid<PlaceView>();
     
     void CreateBlocks(List<BlockModel> blocks, bool init = false){
         foreach(BlockModel block in blocks)
-            transforms.Add(new Pos(block.x,block.z), CreateBlock(block));
+            transforms.Add(block.x, block.z, CreateBlock(block));
         if(init)
             board.Add(blocks);
         else
@@ -55,7 +55,7 @@ public class Board : MonoBehaviour {
         Vector2 pos = new Vector2(2f*ri*(((float)x)+(z%2==0?0.0f:0.5f)),1.5f*ro*(float)z);
         instance.localPosition = new Vector3(pos.x,0f,pos.y);
         validPositions.Add(pos);
-        places.Add(new Pos(x,z), instance.Find("Mesh").gameObject.GetComponent<PlaceView>());
+        places.Add(x, z, instance.Find("Mesh").gameObject.GetComponent<PlaceView>());
         return instance;
     }
     
@@ -87,20 +87,12 @@ public class Board : MonoBehaviour {
         CreateBlocks(blocks, true);*/
         
         board.removeBlock += (o, ev) => {
-            foreach(BlockModel block in ev.Blocks){
-                Pos pos = new Pos(block.x,block.z);
-                Destroy(transforms[pos].gameObject);
-                transforms.Remove(pos);
-            }
+            foreach(BlockModel block in ev.Blocks)
+                Destroy(transforms.Remove(block.x,block.z).gameObject);
         };
         
         current = transform.Find("Current").gameObject.GetComponent<Piece>();
-        board.newPiece += (o, ev) => {
-            current.clear();
-            foreach(BlockModel block in ev.Blocks)
-                current.add(block);
-            current.moveToCenter();
-        };
+        board.newPiece += (o, ev) => { current.New(ev.Blocks); };
         
         Outside outside = transform.Find("Outside").gameObject.GetComponent<Outside>();
         outside.board = this;
@@ -122,9 +114,11 @@ public class Board : MonoBehaviour {
     void doShadow(List<BlockModel> list){
         PlaceView place;
         HashSet<PlaceView> newSelectedPlaces = new HashSet<PlaceView>();
-        foreach(BlockModel block in list)
-            if(places.TryGetValue(new Pos(block.x,block.z),out place))
+        foreach(BlockModel block in list){
+            place = places.Get(block.x, block.z);
+            if(place != null)
                 newSelectedPlaces.Add(place);
+        }
         foreach(PlaceView placeToSelect in newSelectedPlaces.Except(selectedPlaces))
             placeToSelect.Selected(true);
         foreach(PlaceView placeToUnselect in selectedPlaces.Except(newSelectedPlaces))
@@ -140,15 +134,15 @@ public class Board : MonoBehaviour {
         if(current == null)
             return;
         
-        current.incRotation(Input.GetAxis("Mouse ScrollWheel"));
+        current.IncRotation(Input.GetAxis("Mouse ScrollWheel"));
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         if(Physics.Raycast(ray, out hit)){
-            current.moveTo(hit.point);
+            current.MoveTo(hit.point);
             foreach(Transform tr in shadow)
                 Destroy(tr.gameObject);
             shadow.Clear();
-            List<BlockModel> list = current.getShadow();
+            List<BlockModel> list = current.GetShadow();
             doShadow(list);
             if(Input.GetButtonDown("Fire1")){
                 CreateBlocks(list);

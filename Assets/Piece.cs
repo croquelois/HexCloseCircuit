@@ -13,13 +13,11 @@ public class Piece : MonoBehaviour {
     List<PosAndObject> elem = new List<PosAndObject>();
     float r = 0f;
     
-    public List<BlockModel> getShadow(){
+    public List<BlockModel> GetShadow(){
         List<BlockModel> list = new List<BlockModel>();
         int incR = Mathf.RoundToInt(r * 6f / 360f);
         foreach(PosAndObject pno in elem){
             Vector3 pos = (Quaternion.Euler(0, incR*360f/6f, 0)*pno.obj.localPosition + transform.localPosition);
-            //
-            //transform.InverseTransformPoint(pno.obj.position) + transform.localPosition;
             float X = pos.x;
             float Z = pos.z;
             float ro = HexMetrics.outerRadius;
@@ -33,28 +31,39 @@ public class Piece : MonoBehaviour {
         return list;
     }
     
-    public void incRotation(float delta){
+    public void IncRotation(float delta){
         r += delta*10f*60f*0.25f;
         if(r > 360f) r -= 360f;
         if(r < 0f) r += 360f;
         transform.rotation = Quaternion.Euler(0, r, 0);
     }
     
-    public void moveTo(Vector3 pos){
+    public void MoveTo(Vector3 pos){
         transform.localPosition = pos;
-        /*foreach(PosAndObject pno in elem)
-            pno.obj.localPosition = pos + pno.pos;*/
     }
     
-    public void clear(){
+    public void New(List<BlockModel> blocks){
+        Vector3 oldPos = transform.localPosition;
         r = 0;
         transform.rotation = Quaternion.Euler(0, r, 0);
+        transform.localPosition = new Vector3(0f,0f,0f);
         elem.Clear();
         foreach (Transform child in transform)
             GameObject.Destroy(child.gameObject);
+        foreach(BlockModel block in blocks)
+            Add(block);
+        Vector3 center = new Vector3();
+        foreach(PosAndObject pno in elem)
+            center += pno.pos;
+        center /= elem.Count;
+        foreach(PosAndObject pno in elem){
+            pno.pos -= center;
+            pno.obj.localPosition = pno.pos;
+        }
+        transform.localPosition = oldPos;
     }
     
-    public Transform add(BlockModel model){
+    Transform Add(BlockModel model){
         Transform instance = Instantiate(piecePrefab);
         BlockView block = instance.gameObject.GetComponent<BlockView>();
         block.dir1 = model.dir1;
@@ -68,17 +77,6 @@ public class Piece : MonoBehaviour {
         instance.SetParent(transform);
         elem.Add(pno);
         return pno.obj;
-    }
-    
-    public void moveToCenter(){
-        Vector3 center = new Vector3();
-        foreach(PosAndObject pno in elem)
-            center += pno.pos;
-        center /= elem.Count;
-        foreach(PosAndObject pno in elem){
-            pno.pos -= center;
-            pno.obj.localPosition = pno.pos;
-        }        
     }
 }
 

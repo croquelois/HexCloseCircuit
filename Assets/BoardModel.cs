@@ -34,7 +34,7 @@ public class ListOfBlockEventArgs : EventArgs {
 
 public class BoardModel {
     PiecesLoader pieces = new PiecesLoader();
-    Dictionary<Pos,BlockModel> grid = new Dictionary<Pos,BlockModel>();
+    Grid<BlockModel> grid = new Grid<BlockModel>();
     int score = 0;
     int life = 1;
     float time = 0f;
@@ -53,13 +53,13 @@ public class BoardModel {
     
     void Remove(List<BlockModel> blocks){
         foreach(BlockModel block in blocks)
-            grid.Remove(new Pos(block.x,block.z));
+            grid.Remove(block.x, block.z);
         removeBlock(this, new ListOfBlockEventArgs(blocks));
     }
     
     public void Add(List<BlockModel> blocks){
         foreach(BlockModel block in blocks)
-            grid.Add(new Pos(block.x,block.z), block);
+            grid.Add(block.x, block.z, block);
     }
     
     public void Push(List<BlockModel> blocks){
@@ -117,8 +117,8 @@ public class BoardModel {
             x += (z%2) - 1;
             z -= 1;
         }
-        BlockModel next;
-        if(!grid.TryGetValue(new Pos(x,z), out next))
+        BlockModel next = grid.Get(x, z);
+        if(next == null)
             return null;
         HexDirection opp = dir.Opposite();
         if(next.dir1 == opp)
@@ -131,8 +131,8 @@ public class BoardModel {
     CheckConnectionResult CheckConnection(int x, int z){
         CheckConnectionResult res = new CheckConnectionResult();
         List<BlockModel> blocks = res.blocks;
-        BlockModel block;
-        if(!grid.TryGetValue(new Pos(x,z), out block))
+        BlockModel block = grid.Get(x, z);
+        if(block == null)
             return res; // no block in the current position
         
         blocks.Add(block);
