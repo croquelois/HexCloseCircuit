@@ -12,6 +12,7 @@ public class Piece : MonoBehaviour {
     public Transform piecePrefab;
     List<PosAndObject> elem = new List<PosAndObject>();
     float r = 0f;
+    float curR = 0f;
     
     public List<BlockModel> GetShadow(){
         List<BlockModel> list = new List<BlockModel>();
@@ -35,7 +36,27 @@ public class Piece : MonoBehaviour {
         r += delta*10f*60f;//*0.25f;
         if(r > 360f) r -= 360f;
         if(r < 0f) r += 360f;
-        transform.rotation = Quaternion.Euler(0, r, 0);
+    }
+    
+    void Update()
+    {
+        if(curR == r)
+            return;
+        float d = Time.deltaTime*360f;
+        float a = Mathf.Abs(r - curR);
+        float w = 1f;
+        if(a > 180f){
+            w = -1f;
+            a -= 180f;
+        }
+        if(a < d)
+            curR = r;
+        else{
+            curR += d*w*Mathf.Sign(r - curR);
+            if(curR > 360f) curR -= 360f;
+            if(curR < 0f) curR += 360f; 
+        }
+        transform.rotation = Quaternion.Euler(0, curR, 0);
     }
     
     public void MoveTo(Vector3 pos){
@@ -44,7 +65,7 @@ public class Piece : MonoBehaviour {
     
     public void New(List<BlockModel> blocks){
         Vector3 oldPos = transform.localPosition;
-        r = 0;
+        curR = r = 0;
         transform.rotation = Quaternion.Euler(0, r, 0);
         transform.localPosition = new Vector3(0f,0f,0f);
         elem.Clear();
@@ -61,7 +82,7 @@ public class Piece : MonoBehaviour {
             pno.obj.localPosition = pno.pos;
         }
         transform.localPosition = oldPos;
-        r = Random.Range(0,6)*60f;
+        curR = r = Random.Range(0,6)*60f;
         transform.rotation = Quaternion.Euler(0, r, 0);
     }
     
