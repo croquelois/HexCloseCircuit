@@ -32,7 +32,7 @@ public class Piece : MonoBehaviour {
     }
     
     public void IncRotation(float delta){
-        r += delta*10f*60f*0.25f;
+        r += delta*10f*60f;//*0.25f;
         if(r > 360f) r -= 360f;
         if(r < 0f) r += 360f;
         transform.rotation = Quaternion.Euler(0, r, 0);
@@ -61,6 +61,8 @@ public class Piece : MonoBehaviour {
             pno.obj.localPosition = pno.pos;
         }
         transform.localPosition = oldPos;
+        r = Random.Range(0,6)*60f;
+        transform.rotation = Quaternion.Euler(0, r, 0);
     }
     
     Transform Add(BlockModel model){

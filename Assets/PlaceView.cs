@@ -9,7 +9,7 @@ public class PlaceView : MonoBehaviour {
     List<int> triangles;
     List<Vector2> uvs;
     bool selected = false;
-    bool emptyCore = true;
+    bool emptyCore = false;
     
     void AddTriangle(Vector3 v1, Vector3 v2, Vector3 v3, bool border) {
         int vertexIndex = vertices.Count;

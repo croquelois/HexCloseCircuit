@@ -2,8 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+struct BatchConfig {
+    public int minSize;
+    public List<float> nbByLength;
+    public List<List<BlockModel>> mandatory;
+}
+
 public class PiecesLoader {
+    BatchConfig batchConfig;
     List<List<BlockModel>> pieces = new List<List<BlockModel>>();
+    
+    public PiecesLoader(){
+        batchConfig.minSize = 2;
+        batchConfig.nbByLength = new List<float>{4f,3f,2f,0.5f,0.25f,0.25f};
+        batchConfig.mandatory = new List<List<BlockModel>>();
+        for(int i=0;i<3;i++)
+            batchConfig.mandatory.Add(new List<BlockModel>{ new BlockModel(0,0,HexDirection.E,HexDirection.W) });
+    }
+    
     void MoveNextPos(int x, int z, HexDirection dir, out int nx, out int nz){
         int odd = z > 0 ? (z%2) : -(z%2);
         switch(dir){
@@ -95,23 +111,48 @@ public class PiecesLoader {
     }
     int RandomLength(){
         float v = Random.value;
-        if(v < 0.3)
-            return 1; // 30%
-        if(v < 0.6)
+        if(v < 0.4)
+            return 1; // 40%
+        if(v < 0.7)
             return 2; // 30%
-        if(v < 0.8)
+        if(v < 0.9)
             return 3; // 20%
-        if(v < 0.9)
-            return 4; // 10%
-        if(v < 0.9)
-            return 5; // 5%
-        return 6; // 5%
+        if(v < 0.95)
+            return 4; // 5%
+        if(v < 0.98)
+            return 5; // 3%
+        return 6; // 2%
+    }
+    List<List<BlockModel>> PrepareBatch(){
+        List<List<BlockModel>> ret = new List<List<BlockModel>>();
+        for(int i=0;i<batchConfig.nbByLength.Count;i++){
+            float n = batchConfig.nbByLength[i];
+            while(n >= 1f){
+                ret.Add(Generate(i));
+                n -= 1f;
+            }
+            if(n > 0f && Random.value < n)
+                ret.Add(Generate(i));
+        }
+        foreach(List<BlockModel> piece in batchConfig.mandatory)
+            ret.Add(piece);
+        return ret;
+    }
+    List<BlockModel> GetFromBatch(){
+        if(pieces.Count < batchConfig.minSize)
+            pieces = PrepareBatch();
+        int p = Random.Range(0, pieces.Count);
+        List<BlockModel> piece = pieces[p];
+        pieces.RemoveAt(p);
+        return piece;
+        
     }
     public List<BlockModel> Get(){
         //return pieces[Random.Range(0, pieces.Count)];
-        List<BlockModel> ret = null;
+        /*List<BlockModel> ret = null;
         while(ret == null)
             ret = Generate(RandomLength());
-        return ret;
+        return ret;*/
+        return GetFromBatch();
     }
 }

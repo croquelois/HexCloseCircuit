@@ -11,6 +11,7 @@ public class Board : MonoBehaviour {
     public Transform borderPrefab;
     public Transform placePrefab;
     public Text score;
+    public Text life;
     public Slider timer;
     BoardModel board = new BoardModel();
     
@@ -92,14 +93,18 @@ public class Board : MonoBehaviour {
                 Destroy(transforms.Remove(block.x,block.z).gameObject);
         };
         
+        board.updateScore += (o, ev) => { score.text = "Score: " + ev.Score; };
+        board.updateLife += (o, ev) => { life.text = "Life: " + ev.Life; };
+        
         current = transform.Find("Current").gameObject.GetComponent<Piece>();
         board.newPiece += (o, ev) => { current.New(ev.Blocks); };
         
-        /*Outside outside = transform.Find("Outside").gameObject.GetComponent<Outside>();
+        Outside outside = transform.Find("Outside").gameObject.GetComponent<Outside>();
         outside.board = this;
-        outside.Triangulate(-5,boardWidth+5,-5,boardHeight+5);*/
+        outside.Triangulate(-5,boardWidth+5,-5,boardHeight+5);
         
         board.Start();
+        Cursor.visible = false;
     }
     
     public float distanceTo(float x, float z){

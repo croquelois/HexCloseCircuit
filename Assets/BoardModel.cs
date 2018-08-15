@@ -25,6 +25,13 @@ public class ScoreEventArgs : EventArgs {
     }
 }
 
+public class LifeEventArgs : EventArgs {
+    public int Life { get; private set; }
+    public LifeEventArgs(int life){
+        Life = life;
+    }
+}
+
 public class ListOfBlockEventArgs : EventArgs {
     public List<BlockModel> Blocks { get; private set; }
     public ListOfBlockEventArgs(List<BlockModel> blocks){
@@ -47,6 +54,7 @@ public class BoardModel {
     
     public event EventHandler<EventArgs> loopCompleted = delegate {};
     public event EventHandler<ScoreEventArgs> updateScore = delegate {};
+    public event EventHandler<LifeEventArgs> updateLife = delegate {};
     public event EventHandler<ListOfBlockEventArgs> removeBlock = delegate {};
     public event EventHandler<ListOfBlockEventArgs> newPiece = delegate {};
     public event EventHandler<EventArgs> gameOver = delegate {};
@@ -63,7 +71,8 @@ public class BoardModel {
     }
     
     int nbBlockToScoreIncrease(int nb){
-        return nb; // @@CROQ@@ make it more than linear a(n+1) = a(n)*1.1 + 1
+        float c = 1.1f;
+        return Mathf.RoundToInt((1f - Mathf.Pow(c,(float)nb))/(1f - c));
     }
     
     public void Push(List<BlockModel> blocks){
@@ -82,9 +91,12 @@ public class BoardModel {
     }
     
     public void Update(float dt){
-        time += dt * 0.01f;
-        if(time > 1.0f){
+        if(life == 0)
+            return;
+        time += dt/5f;
+        if(time > 1f){
             life--;
+            updateLife(this, new LifeEventArgs(life));
             if(life == 0)
                 gameOver(this, new EventArgs());
             newPiece(this, new ListOfBlockEventArgs(pieces.Get()));
@@ -96,6 +108,8 @@ public class BoardModel {
         pieces.Load();
         newPiece(this, new ListOfBlockEventArgs(pieces.Get()));
         time = 0.0f;
+        updateLife(this, new LifeEventArgs(life));
+        updateScore(this, new ScoreEventArgs(score));
     }
     
     BlockWithDir GetNext(BlockWithDir prev){
