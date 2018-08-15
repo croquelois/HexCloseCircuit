@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BlockViewSolid : MonoBehaviour {
-    public const float textureScale = 0.1f;
+    public const float textureScale = 0.01f;
     Mesh mesh;
     List<Vector3> vertices;
     List<int> triangles;

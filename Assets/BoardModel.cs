@@ -62,18 +62,23 @@ public class BoardModel {
             grid.Add(block.x, block.z, block);
     }
     
+    int nbBlockToScoreIncrease(int nb){
+        return nb; // @@CROQ@@ make it more than linear a(n+1) = a(n)*1.1 + 1
+    }
+    
     public void Push(List<BlockModel> blocks){
         Add(blocks);
         foreach(BlockModel block in blocks){
             CheckConnectionResult res = CheckConnection(block.x,block.z);
             if(res.isLoop){
-                score += res.blocks.Count;
+                score += nbBlockToScoreIncrease(res.blocks.Count);
                 Remove(res.blocks);
                 loopCompleted(this, new EventArgs());
                 updateScore(this, new ScoreEventArgs(score));
             }
         }
         newPiece(this, new ListOfBlockEventArgs(pieces.Get()));
+        time = 0.0f;
     }
     
     public void Update(float dt){
@@ -90,6 +95,7 @@ public class BoardModel {
     public void Start(){
         pieces.Load();
         newPiece(this, new ListOfBlockEventArgs(pieces.Get()));
+        time = 0.0f;
     }
     
     BlockWithDir GetNext(BlockWithDir prev){

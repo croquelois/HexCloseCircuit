@@ -9,6 +9,7 @@ public class PlaceView : MonoBehaviour {
     List<int> triangles;
     List<Vector2> uvs;
     bool selected = false;
+    bool emptyCore = true;
     
     void AddTriangle(Vector3 v1, Vector3 v2, Vector3 v3, bool border) {
         int vertexIndex = vertices.Count;
@@ -52,7 +53,8 @@ public class PlaceView : MonoBehaviour {
             Vector3 c2 = c + 0.9f*corners[i+1];
             
             // Top
-            AddTriangle(c, c1, c2, false);
+            if(!emptyCore || selected)
+                AddTriangle(c, c1, c2, false);
             AddTriangle(c1, v1, v2, true);
             AddTriangle(c1, v2, c2, true);
         }

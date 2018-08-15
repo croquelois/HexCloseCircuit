@@ -41,11 +41,12 @@ public class Board : MonoBehaviour {
     }
     
     Transform CreateBorder(int x, int z){
-        Transform instance = Instantiate(borderPrefab);
+        /*Transform instance = Instantiate(borderPrefab);
         float ro = HexMetrics.outerRadius;
         float ri = HexMetrics.innerRadius;
         instance.localPosition = new Vector3(2f*ri*(((float)x)+(z%2==0?0.0f:0.5f)),0f,1.5f*ro*(float)z);
-        return instance;
+        return instance;*/
+        return null;
     }
     
     Transform CreatePlace(int x, int z){
@@ -94,9 +95,9 @@ public class Board : MonoBehaviour {
         current = transform.Find("Current").gameObject.GetComponent<Piece>();
         board.newPiece += (o, ev) => { current.New(ev.Blocks); };
         
-        Outside outside = transform.Find("Outside").gameObject.GetComponent<Outside>();
+        /*Outside outside = transform.Find("Outside").gameObject.GetComponent<Outside>();
         outside.board = this;
-        outside.Triangulate(-5,boardWidth+5,-5,boardHeight+5);
+        outside.Triangulate(-5,boardWidth+5,-5,boardHeight+5);*/
         
         board.Start();
     }
