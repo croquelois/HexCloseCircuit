@@ -46,6 +46,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\ApplicationManager.cs" />
      <Compile Include="Assets\BlockModel.cs" />
      <Compile Include="Assets\BlockView.cs" />
      <Compile Include="Assets\BlockViewLiquid.cs" />

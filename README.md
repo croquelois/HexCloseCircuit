@@ -1,12 +1,24 @@
 # HexCloseCircuit
-The goal of this puzzle game is to create closed circuit from the pieces randomly given.
+The goal of this puzzle game is to create closed circuits from the randomly given pieces.
 
 ## Short term:
 
-- add the basic game logic
-- add a list of pieces
+- add start option (size, piece picker, speed)
+- go back to menu after gameover
+- animation (particule ?) when loop completed
+
+## Long term:
+
+- increasing difficulty as time pass
+- game modes
+- coherent tasteful graphic style
+- music, sound effect
 
 ## Snapshot:
+
+2018-08-14: The start menu, and yes, I need to work on it, it's ugly
+
+![2018-08-15](screenshot-20180815.png)
 
 2018-08-14: I'm trying to found a style... yes it look bad
 

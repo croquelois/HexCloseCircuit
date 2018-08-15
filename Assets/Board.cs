@@ -10,6 +10,7 @@ public class Board : MonoBehaviour {
     public Transform piecePrefab;
     public Transform borderPrefab;
     public Transform placePrefab;
+    public GameObject gameOverOverlay;
     public Text score;
     public Text life;
     public Slider timer;
@@ -21,6 +22,7 @@ public class Board : MonoBehaviour {
     HashSet<PlaceView> selectedPlaces = new HashSet<PlaceView>();
     Grid<Transform> transforms = new Grid<Transform>();
     Grid<PlaceView> places = new Grid<PlaceView>();
+    bool gameOver = false;
     
     void CreateBlocks(List<BlockModel> blocks, bool init = false){
         foreach(BlockModel block in blocks)
@@ -95,6 +97,11 @@ public class Board : MonoBehaviour {
         
         board.updateScore += (o, ev) => { score.text = "Score: " + ev.Score; };
         board.updateLife += (o, ev) => { life.text = "Life: " + ev.Life; };
+        board.gameOver += (o, ev) => { 
+            gameOver = true; 
+            gameOverOverlay.SetActive(true); 
+            Cursor.visible = true;
+        };
         
         current = transform.Find("Current").gameObject.GetComponent<Piece>();
         board.newPiece += (o, ev) => { current.New(ev.Blocks); };
@@ -147,7 +154,7 @@ public class Board : MonoBehaviour {
     
     void Update()
     {
-        if(current == null)
+        if(gameOver || current == null)
             return;
         
         current.IncRotation(Input.GetAxis("Mouse ScrollWheel"));
