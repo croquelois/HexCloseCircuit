@@ -5,8 +5,6 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Board : MonoBehaviour {
-    public int boardHeight = 15;
-    public int boardWidth = 20;
     public Transform piecePrefab;
     public Transform borderPrefab;
     public Transform placePrefab;
@@ -64,6 +62,8 @@ public class Board : MonoBehaviour {
     }
     
     private void Start () {
+        int boardHeight = Options.boardHeight;
+        int boardWidth = Options.boardWidth;
         /*
         BoardModelTest test = new BoardModelTest();
         test.Main();

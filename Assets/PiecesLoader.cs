@@ -13,11 +13,34 @@ public class PiecesLoader {
     List<List<BlockModel>> pieces = new List<List<BlockModel>>();
     
     public PiecesLoader(){
-        batchConfig.minSize = 2;
-        batchConfig.nbByLength = new List<float>{4f,3f,2f,0.5f,0.25f,0.25f};
-        batchConfig.mandatory = new List<List<BlockModel>>();
-        for(int i=0;i<3;i++)
-            batchConfig.mandatory.Add(new List<BlockModel>{ new BlockModel(0,0,HexDirection.E,HexDirection.W) });
+        switch(Options.piecePicker){
+            case "simple":
+                batchConfig.minSize = 2;
+                batchConfig.nbByLength = new List<float>{4f,4f,1f};
+                batchConfig.mandatory = new List<List<BlockModel>>();
+                for(int i=0;i<3;i++)
+                    batchConfig.mandatory.Add(new List<BlockModel>{ new BlockModel(0,0,HexDirection.E,HexDirection.W) });
+                break;
+            case "complex":
+                batchConfig.minSize = 2;
+                batchConfig.nbByLength = new List<float>{4f,3f,2f,0.5f,0.25f,0.25f};
+                batchConfig.mandatory = new List<List<BlockModel>>();
+                for(int i=0;i<2;i++)
+                    batchConfig.mandatory.Add(new List<BlockModel>{ new BlockModel(0,0,HexDirection.E,HexDirection.W) });
+                break;
+            case "dude?":
+                batchConfig.minSize = 2;
+                batchConfig.nbByLength = new List<float>{2f,1f,3f,0.5f,0.25f,0.25f,0.10f,0.05f,1f};
+                batchConfig.mandatory = new List<List<BlockModel>>();
+                for(int i=0;i<2;i++){
+                    batchConfig.mandatory.Add(new List<BlockModel>{ new BlockModel(0,0,HexDirection.E,HexDirection.W) });
+                    batchConfig.mandatory.Add(new List<BlockModel>{ new BlockModel(0,0,HexDirection.E,HexDirection.NW) });
+                    batchConfig.mandatory.Add(new List<BlockModel>{ new BlockModel(0,0,HexDirection.E,HexDirection.SW) });
+                }
+                break;
+            default:
+                throw new System.Exception("Unknow column picker");
+        }
     }
     
     void MoveNextPos(int x, int z, HexDirection dir, out int nx, out int nz){

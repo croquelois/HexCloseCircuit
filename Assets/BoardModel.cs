@@ -93,7 +93,7 @@ public class BoardModel {
     public void Update(float dt){
         if(life == 0)
             return;
-        time += dt/5f;
+        time += dt/Options.speed;
         if(time > 1f){
             life--;
             updateLife(this, new LifeEventArgs(life));
