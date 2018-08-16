@@ -13,6 +13,11 @@ public class ApplicationManager : MonoBehaviour {
 	{
 	}
     
+	public void BackToMenu () 
+	{
+        SceneManager.LoadScene("main", LoadSceneMode.Single);
+	}
+    
 	public void Quit () 
 	{
 		#if UNITY_EDITOR
