@@ -3,9 +3,9 @@ The goal of this puzzle game is to create closed circuits from the randomly give
 
 ## Short term:
 
-- add start option (size, piece picker, speed)
-- go back to menu after gameover
-- animation (particule ?) when loop completed
+- animation: when loop completed (particule ?)
+- animation: when game start (camera move ?)
+- refactor logic, move logic to GameManager
 
 ## Long term:
 
