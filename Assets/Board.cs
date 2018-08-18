@@ -21,7 +21,7 @@ public class Board : MonoBehaviour {
     Grid<Transform> transforms = new Grid<Transform>();
     Grid<PlaceView> places = new Grid<PlaceView>();
     bool gameOver = false;
-    bool pause = false;
+    bool pause = true;
     
     void CreateBlocks(List<BlockModel> blocks, bool init = false){
         foreach(BlockModel block in blocks)
@@ -62,7 +62,7 @@ public class Board : MonoBehaviour {
         return instance;
     }
     
-    void Unpause(){
+    public void Unpause(){
         pause = false;
     }
     
@@ -70,7 +70,6 @@ public class Board : MonoBehaviour {
         int boardHeight = Options.boardHeight;
         int boardWidth = Options.boardWidth;
         /*
-        pause = true;
         BoardModelTest test = new BoardModelTest();
         test.Main();
         return;

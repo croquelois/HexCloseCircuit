@@ -53,6 +53,7 @@
      <Compile Include="Assets\Board.cs" />
      <Compile Include="Assets\BoardModel.cs" />
      <Compile Include="Assets\BoardViewBorder.cs" />
+     <Compile Include="Assets\GameCamera.cs" />
      <Compile Include="Assets\GameManager.cs" />
      <Compile Include="Assets\Grid.cs" />
      <Compile Include="Assets\HexEnum.cs" />

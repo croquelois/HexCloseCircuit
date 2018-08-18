@@ -3,12 +3,11 @@ The goal of this puzzle game is to create closed circuits from the randomly give
 
 ## Short term:
 
-- animation: when game start (camera move ?)
+- increasing difficulty as time pass
 - refactor logic, move logic to GameManager
 
 ## Long term:
 
-- increasing difficulty as time pass
 - game modes
 - coherent tasteful graphic style
 - music, sound effect
