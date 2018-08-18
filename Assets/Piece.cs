@@ -42,19 +42,24 @@ public class Piece : MonoBehaviour {
     {
         if(curR == r)
             return;
-        float d = Time.deltaTime*360f;
-        float a = Mathf.Abs(r - curR);
-        float w = 1f;
-        if(a > 180f){
-            w = -1f;
-            a -= 180f;
-        }
-        if(a < d)
+        float rotationSpeed = GameApplication.GetOptions().rotationSpeed;
+        if(rotationSpeed == 0f){
             curR = r;
-        else{
-            curR += d*w*Mathf.Sign(r - curR);
-            if(curR > 360f) curR -= 360f;
-            if(curR < 0f) curR += 360f; 
+        }else{
+            float d = Time.deltaTime*rotationSpeed;
+            float a = Mathf.Abs(r - curR);
+            float w = 1f;
+            if(a > 180f){
+                w = -1f;
+                a -= 180f;
+            }
+            if(a < d)
+                curR = r;
+            else{
+                curR += d*w*Mathf.Sign(r - curR);
+                if(curR > 360f) curR -= 360f;
+                if(curR < 0f) curR += 360f; 
+            }
         }
         transform.rotation = Quaternion.Euler(0, curR, 0);
     }

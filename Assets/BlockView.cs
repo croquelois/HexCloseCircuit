@@ -24,7 +24,8 @@ public class BlockView : MonoBehaviour {
     public void Explode(){
         Destroy(solid.gameObject);
         Destroy(liquid.gameObject);
-        explosion.Play();
+        if(GameApplication.GetOptions().particules)
+            explosion.Play();
         Destroy(gameObject, ExplosionDuration);
     }
     void Awake () {

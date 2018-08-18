@@ -39,10 +39,12 @@ public class GameCamera : MonoBehaviour {
     }
     
     void Start () {
-        float x = ((float)Options.boardWidth-1f)*HexMetrics.innerRadius;
-        float z = ((float)Options.boardHeight-1f)*0.5f*(HexMetrics.innerRadius+HexMetrics.outerRadius);
-        float dz = 40f - ((float)Options.boardHeight) * 5f;
+        float width = (float)GameApplication.GetOptions().BoardWidth;
+        float height = (float)GameApplication.GetOptions().BoardHeight;
+        float x = (width-1f)*HexMetrics.innerRadius;
+        float z = (height-1f)*0.5f*(HexMetrics.innerRadius+HexMetrics.outerRadius);
+        float dz = 40f - height * 5f;
         transform.localPosition = new Vector3(x,23f,z + dz);
-        stickMaxZoom = -12.5f*((float)Options.boardHeight);
+        stickMaxZoom = -12.5f*height;
     }
 }

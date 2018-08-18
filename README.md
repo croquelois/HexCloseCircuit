@@ -3,11 +3,14 @@ The goal of this puzzle game is to create closed circuits from the randomly give
 
 ## Short term:
 
-- increasing difficulty as time pass
+- add the bomb (piece which destroy existing connected blocks)
+- animation after loosing a life
 - refactor logic, move logic to GameManager
 
 ## Long term:
 
+- highscore
+- level
 - game modes
 - coherent tasteful graphic style
 - music, sound effect

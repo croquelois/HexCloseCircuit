@@ -45,6 +45,8 @@ public class BoardModel {
     int score = 0;
     int life = 1;
     float time = 0f;
+    float totalTime = 0f;
+    float speed = 5f;
     
     public float Time {
         get {
@@ -83,7 +85,7 @@ public class BoardModel {
                 score += nbBlockToScoreIncrease(res.blocks.Count);
                 Remove(res.blocks);
                 loopCompleted(this, new EventArgs());
-                updateScore(this, new ScoreEventArgs(score));
+                updateScore(this, new ScoreEventArgs(score));                
             }
         }
         newPiece(this, new ListOfBlockEventArgs(pieces.Get()));
@@ -93,7 +95,9 @@ public class BoardModel {
     public void Update(float dt){
         if(life == 0)
             return;
-        time += dt/Options.speed;
+        time += dt/(speed*Mathf.Pow(0.995f,totalTime));
+        totalTime += dt;
+        
         if(time > 1f){
             life--;
             updateLife(this, new LifeEventArgs(life));
@@ -108,6 +112,7 @@ public class BoardModel {
         pieces.Load();
         newPiece(this, new ListOfBlockEventArgs(pieces.Get()));
         time = 0.0f;
+        speed = GameApplication.GetOptions().SpeedFlt;
         updateLife(this, new LifeEventArgs(life));
         updateScore(this, new ScoreEventArgs(score));
     }

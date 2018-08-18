@@ -67,8 +67,8 @@ public class Board : MonoBehaviour {
     }
     
     private void Start () {
-        int boardHeight = Options.boardHeight;
-        int boardWidth = Options.boardWidth;
+        int boardHeight = GameApplication.GetOptions().BoardHeight;
+        int boardWidth = GameApplication.GetOptions().BoardWidth;
         /*
         BoardModelTest test = new BoardModelTest();
         test.Main();
@@ -87,7 +87,7 @@ public class Board : MonoBehaviour {
         
         for(int z=0;z<boardHeight;z++)
             CreateBorder(boardWidth,z);
-        List<BlockModel> blocks = new List<BlockModel>();
+        /*List<BlockModel> blocks = new List<BlockModel>();
         blocks.Add(new BlockModel(4,5,HexDirection.SW,HexDirection.E));
         blocks.Add(new BlockModel(5,5,HexDirection.W,HexDirection.SE));
         blocks.Add(new BlockModel(4,4,HexDirection.SE,HexDirection.NE));
@@ -95,7 +95,7 @@ public class Board : MonoBehaviour {
         blocks.Add(new BlockModel(4,3,HexDirection.NW,HexDirection.E));
         //blocks.Add(new BlockModel(5,3,HexDirection.NE,HexDirection.W));
         CreateBlocks(blocks, true);
-        
+        */
         
         board.removeBlock += (o, ev) => {
             if(ev.Blocks.Count == 0)

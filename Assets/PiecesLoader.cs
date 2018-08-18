@@ -13,7 +13,7 @@ public class PiecesLoader {
     List<List<BlockModel>> pieces = new List<List<BlockModel>>();
     
     public PiecesLoader(){
-        switch(Options.piecePicker){
+        switch(GameApplication.GetOptions().piecePicker){
             case "simple":
                 batchConfig.minSize = 2;
                 batchConfig.nbByLength = new List<float>{4f,4f,1f};
