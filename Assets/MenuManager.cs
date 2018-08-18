@@ -74,6 +74,7 @@ public class MenuManager : MonoBehaviour {
     }
     
     private void Start(){
+        GameApplication.LoadOptions();
         options = GameApplication.GetOptions();
         applyOption2UI();
     }

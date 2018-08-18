@@ -16,21 +16,21 @@ public class PiecesLoader {
         switch(GameApplication.GetOptions().piecePicker){
             case "simple":
                 batchConfig.minSize = 2;
-                batchConfig.nbByLength = new List<float>{4f,4f,1f};
+                batchConfig.nbByLength = new List<float>{0.2f,4f,4f,1f};
                 batchConfig.mandatory = new List<List<BlockModel>>();
                 for(int i=0;i<3;i++)
                     batchConfig.mandatory.Add(new List<BlockModel>{ new BlockModel(0,0,HexDirection.E,HexDirection.W) });
                 break;
             case "complex":
                 batchConfig.minSize = 2;
-                batchConfig.nbByLength = new List<float>{4f,3f,2f,0.5f,0.25f,0.25f};
+                batchConfig.nbByLength = new List<float>{0.2f,4f,3f,2f,0.5f,0.25f,0.25f};
                 batchConfig.mandatory = new List<List<BlockModel>>();
                 for(int i=0;i<2;i++)
                     batchConfig.mandatory.Add(new List<BlockModel>{ new BlockModel(0,0,HexDirection.E,HexDirection.W) });
                 break;
             case "dude?":
                 batchConfig.minSize = 2;
-                batchConfig.nbByLength = new List<float>{2f,1f,3f,0.5f,0.25f,0.25f,0.10f,0.05f,1f};
+                batchConfig.nbByLength = new List<float>{0.1f,2f,1f,3f,0.5f,0.25f,0.25f,0.10f,0.05f,1f};
                 batchConfig.mandatory = new List<List<BlockModel>>();
                 for(int i=0;i<2;i++){
                     batchConfig.mandatory.Add(new List<BlockModel>{ new BlockModel(0,0,HexDirection.E,HexDirection.W) });
@@ -77,6 +77,8 @@ public class PiecesLoader {
         }
     }
     public List<BlockModel> Generate(int len){
+        if(len == 0)
+            return new List<BlockModel>();
         Grid<BlockModel> grid = new Grid<BlockModel>();
         List<BlockModel> ret = new List<BlockModel>();
         HexDirection dir1 = (HexDirection)Random.Range(0, 6);

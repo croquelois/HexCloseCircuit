@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour {
     }
     
     private void Start () {
+        GameApplication.LoadOptions();
         Invoke("Unpause", gameCamera.Duration);
     }
 }

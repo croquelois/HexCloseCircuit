@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 [System.Serializable]
 public class Options {
+    string path = null;
     public string board = "medium";
     public string piecePicker = "complex";
     public string speed = "normal";
@@ -46,17 +47,18 @@ public class Options {
     }
     
     public void Save(){
-        string path = Path.Combine(Application.persistentDataPath, "options.json");
-        File.WriteAllText(path, JsonUtility.ToJson(this));
+        File.WriteAllText(this.path, JsonUtility.ToJson(this));
     }
     
-    static public Options Load(){
-        string path = Path.Combine(Application.persistentDataPath, "options.json");
+    static public Options Load(string path){
+        Options opt;
         try {
-            return JsonUtility.FromJson<Options>(File.ReadAllText(path));
+            opt = JsonUtility.FromJson<Options>(File.ReadAllText(path));
         }catch(Exception ex){
             Debug.Log(ex);
-            return new Options();
+            opt = new Options();
         }
+        opt.path = path;
+        return opt;
     }
 }

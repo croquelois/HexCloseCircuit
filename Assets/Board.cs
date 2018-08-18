@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -94,8 +95,8 @@ public class Board : MonoBehaviour {
         blocks.Add(new BlockModel(6,4,HexDirection.SW,HexDirection.NW));
         blocks.Add(new BlockModel(4,3,HexDirection.NW,HexDirection.E));
         //blocks.Add(new BlockModel(5,3,HexDirection.NE,HexDirection.W));
-        CreateBlocks(blocks, true);
-        */
+        CreateBlocks(blocks, true);*/
+        
         
         board.removeBlock += (o, ev) => {
             if(ev.Blocks.Count == 0)
@@ -121,6 +122,8 @@ public class Board : MonoBehaviour {
         };
         
         current = transform.Find("Current").gameObject.GetComponent<Piece>();
+        if(current == null)
+            throw new Exception("Impossible to found the current peices object");
         board.newPiece += (o, ev) => { current.New(ev.Blocks); };
         
         Outside outside = transform.Find("Outside").gameObject.GetComponent<Outside>();
@@ -187,7 +190,9 @@ public class Board : MonoBehaviour {
             List<BlockModel> list = current.GetShadow();
             doShadow(list);
             if(Input.GetButtonDown("Fire1")){
-                if(IsOkay(list))
+                if(current.IsBomb)
+                    board.Bomb(list[0].x,list[0].z);
+                else if(IsOkay(list))
                     CreateBlocks(list);
             }
         }

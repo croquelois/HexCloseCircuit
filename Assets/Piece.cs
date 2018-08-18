@@ -10,9 +10,15 @@ class PosAndObject {
 
 public class Piece : MonoBehaviour {
     public Transform piecePrefab;
+    public Transform bombPrefab;
     List<PosAndObject> elem = new List<PosAndObject>();
     float r = 0f;
     float curR = 0f;
+    bool isBomb = false;
+    
+    public bool IsBomb {
+        get { return isBomb; }
+    }
     
     public List<BlockModel> GetShadow(){
         List<BlockModel> list = new List<BlockModel>();
@@ -25,8 +31,12 @@ public class Piece : MonoBehaviour {
             float ri = HexMetrics.innerRadius;
             int z = Mathf.RoundToInt(Z/(1.5f*ro));
             int x = Mathf.RoundToInt(X/(2f*ri) - (z%2==0?0.0f:0.5f));
-            HexDirection dir1 = (HexDirection)((((int)pno.model.dir1) + incR) % 6);
-            HexDirection dir2 = (HexDirection)((((int)pno.model.dir2) + incR) % 6);
+            HexDirection dir1 = HexDirection.E;
+            HexDirection dir2 = HexDirection.E;
+            if(pno.model != null){
+                dir1 = (HexDirection)((((int)pno.model.dir1) + incR) % 6);
+                dir2 = (HexDirection)((((int)pno.model.dir2) + incR) % 6);
+            }
             list.Add(new BlockModel(x, z, dir1, dir2));
         }
         return list;
@@ -40,6 +50,11 @@ public class Piece : MonoBehaviour {
     
     void Update()
     {
+        if(IsBomb){
+            curR += Time.deltaTime*45f;
+            transform.rotation = Quaternion.Euler(0, curR, 0);
+            return;
+        }
         if(curR == r)
             return;
         float rotationSpeed = GameApplication.GetOptions().rotationSpeed;
@@ -69,6 +84,7 @@ public class Piece : MonoBehaviour {
     }
     
     public void New(List<BlockModel> blocks){
+        isBomb = (blocks.Count == 0);
         Vector3 oldPos = transform.localPosition;
         curR = r = 0;
         transform.rotation = Quaternion.Euler(0, r, 0);
@@ -76,19 +92,35 @@ public class Piece : MonoBehaviour {
         elem.Clear();
         foreach (Transform child in transform)
             GameObject.Destroy(child.gameObject);
-        foreach(BlockModel block in blocks)
-            Add(block);
-        Vector3 center = new Vector3();
-        foreach(PosAndObject pno in elem)
-            center += pno.pos;
-        center /= elem.Count;
-        foreach(PosAndObject pno in elem){
-            pno.pos -= center;
-            pno.obj.localPosition = pno.pos;
+        if(IsBomb){
+            SetBomb();
+        }else{
+            foreach(BlockModel block in blocks)
+                Add(block);
+            Vector3 center = new Vector3();
+            foreach(PosAndObject pno in elem)
+                center += pno.pos;
+            center /= elem.Count;
+            foreach(PosAndObject pno in elem){
+                pno.pos -= center;
+                pno.obj.localPosition = pno.pos;
+            }
         }
         transform.localPosition = oldPos;
         curR = r = Random.Range(0,6)*60f;
         transform.rotation = Quaternion.Euler(0, r, 0);
+    }
+    
+    Transform SetBomb(){
+        Transform instance = Instantiate(bombPrefab);
+        PosAndObject pno = new PosAndObject();
+        float ro = HexMetrics.outerRadius;
+        float ri = HexMetrics.innerRadius;
+        pno.pos = instance.localPosition = new Vector3(0f,10f,0f);
+        pno.obj = instance;
+        instance.SetParent(transform);
+        elem.Add(pno);
+        return pno.obj;
     }
     
     Transform Add(BlockModel model){

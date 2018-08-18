@@ -77,6 +77,13 @@ public class BoardModel {
         return Mathf.RoundToInt((1f - Mathf.Pow(c,(float)nb))/(1f - c));
     }
     
+    public void Bomb(int x, int z){
+        CheckConnectionResult res = CheckConnection(x,z);
+        Remove(res.blocks);
+        newPiece(this, new ListOfBlockEventArgs(pieces.Get()));
+        time = 0.0f;
+    }
+    
     public void Push(List<BlockModel> blocks){
         Add(blocks);
         foreach(BlockModel block in blocks){

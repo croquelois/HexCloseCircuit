@@ -3,19 +3,23 @@ The goal of this puzzle game is to create closed circuits from the randomly give
 
 ## Short term:
 
-- add the bomb (piece which destroy existing connected blocks)
+- highlight pieces that will be destructed by the bomb
 - animation after loosing a life
 - refactor logic, move logic to GameManager
+- highscore
 
 ## Long term:
 
-- highscore
 - level
 - game modes
 - coherent tasteful graphic style
 - music, sound effect
 
 ## Snapshot:
+
+2018-08-18: I've added the bomb
+
+![2018-08-18b](screenshot-20180818b.png)
 
 2018-08-18: EXPLOSION !
 
