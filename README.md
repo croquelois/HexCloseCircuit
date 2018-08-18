@@ -3,7 +3,6 @@ The goal of this puzzle game is to create closed circuits from the randomly give
 
 ## Short term:
 
-- animation: when loop completed (particule ?)
 - animation: when game start (camera move ?)
 - refactor logic, move logic to GameManager
 
@@ -16,7 +15,11 @@ The goal of this puzzle game is to create closed circuits from the randomly give
 
 ## Snapshot:
 
-2018-08-14: The start menu, and yes, I need to work on it, it's ugly
+2018-08-18: EXPLOSION !
+
+![2018-08-18](screenshot-20180818.png)
+
+2018-08-15: The start menu, and yes, I need to work on it, it's ugly
 
 ![2018-08-15](screenshot-20180815.png)
 

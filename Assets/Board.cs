@@ -21,6 +21,7 @@ public class Board : MonoBehaviour {
     Grid<Transform> transforms = new Grid<Transform>();
     Grid<PlaceView> places = new Grid<PlaceView>();
     bool gameOver = false;
+    bool pause = false;
     
     void CreateBlocks(List<BlockModel> blocks, bool init = false){
         foreach(BlockModel block in blocks)
@@ -61,10 +62,15 @@ public class Board : MonoBehaviour {
         return instance;
     }
     
+    void Unpause(){
+        pause = false;
+    }
+    
     private void Start () {
         int boardHeight = Options.boardHeight;
         int boardWidth = Options.boardWidth;
         /*
+        pause = true;
         BoardModelTest test = new BoardModelTest();
         test.Main();
         return;
@@ -79,22 +85,34 @@ public class Board : MonoBehaviour {
             }
             CreateBorder(x,boardHeight);
         }
+        
         for(int z=0;z<boardHeight;z++)
             CreateBorder(boardWidth,z);
-        /*List<BlockModel> blocks = new List<BlockModel>();
+        List<BlockModel> blocks = new List<BlockModel>();
         blocks.Add(new BlockModel(4,5,HexDirection.SW,HexDirection.E));
         blocks.Add(new BlockModel(5,5,HexDirection.W,HexDirection.SE));
         blocks.Add(new BlockModel(4,4,HexDirection.SE,HexDirection.NE));
         blocks.Add(new BlockModel(6,4,HexDirection.SW,HexDirection.NW));
         blocks.Add(new BlockModel(4,3,HexDirection.NW,HexDirection.E));
-        blocks.Add(new BlockModel(5,3,HexDirection.NE,HexDirection.W));
-        CreateBlocks(blocks, true);*/
+        //blocks.Add(new BlockModel(5,3,HexDirection.NE,HexDirection.W));
+        CreateBlocks(blocks, true);
+        
         
         board.removeBlock += (o, ev) => {
-            foreach(BlockModel block in ev.Blocks)
-                Destroy(transforms.Remove(block.x,block.z).gameObject);
+            if(ev.Blocks.Count == 0)
+                return;
+            pause = true;
+            float callbackTime = 0f;
+            foreach(BlockModel block in ev.Blocks){
+                BlockView view = transforms.Remove(block.x,block.z).gameObject.GetComponent<BlockView>();
+                view.Explode();
+                callbackTime = view.ExplosionDuration;
+            }
+            Invoke("Unpause", callbackTime);
+            timer.value = board.Time;
         };
         
+                
         board.updateScore += (o, ev) => { score.text = "Score: " + ev.Score; };
         board.updateLife += (o, ev) => { life.text = "Life: " + ev.Life; };
         board.gameOver += (o, ev) => { 
@@ -143,6 +161,8 @@ public class Board : MonoBehaviour {
     }
     
     bool IsOkay(List<BlockModel> list){
+        if(pause)
+            return false;
         foreach(BlockModel block in list){
             if(!places.Exist(block.x, block.z))
                 return false;
@@ -154,7 +174,7 @@ public class Board : MonoBehaviour {
     
     void Update()
     {
-        if(gameOver || current == null)
+        if(gameOver)
             return;
         
         current.IncRotation(Input.GetAxis("Mouse ScrollWheel"));
@@ -172,6 +192,10 @@ public class Board : MonoBehaviour {
                     CreateBlocks(list);
             }
         }
+        
+        if(pause)
+            return;
+        
         board.Update(Time.deltaTime);
         timer.value = board.Time;
     }
