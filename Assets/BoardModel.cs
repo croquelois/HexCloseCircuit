@@ -84,6 +84,10 @@ public class BoardModel {
             grid.Add(block.x, block.z, block);
     }
     
+    public List<BlockModel> GetConnected(int x, int z){
+        return CheckConnection(x,z).blocks;
+    }
+    
     int nbBlockToScoreIncrease(int nb){
         float c = 1.1f;
         return Mathf.RoundToInt((1f - Mathf.Pow(c,(float)nb))/(1f - c));

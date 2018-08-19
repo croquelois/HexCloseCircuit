@@ -3,8 +3,6 @@ The goal of this puzzle game is to create closed circuits from the randomly give
 
 ## Short term:
 
-- highlight pieces that will be destructed by the bomb
-- animation after loosing a life
 - refactor logic, move logic to GameManager
 - highscore
 

@@ -16,7 +16,6 @@ public class Board : MonoBehaviour {
     Piece current;
     List<Transform> shadow = new List<Transform>();
     List<Vector2> validPositions = new List<Vector2>();
-    HashSet<PlaceView> selectedPlaces = new HashSet<PlaceView>();
     Grid<Transform> transforms = new Grid<Transform>();
     Grid<PlaceView> places = new Grid<PlaceView>();
     bool gameOver = false;
@@ -94,8 +93,8 @@ public class Board : MonoBehaviour {
         blocks.Add(new BlockModel(6,4,HexDirection.SW,HexDirection.NW));
         blocks.Add(new BlockModel(4,3,HexDirection.NW,HexDirection.E));
         //blocks.Add(new BlockModel(5,3,HexDirection.NE,HexDirection.W));
-        CreateBlocks(blocks, true);*/
-        
+        CreateBlocks(blocks, true);
+        transforms.Get(4,5).GetComponent<BlockView>().Highlight(true);*/
         
         board.removeBlock += (o, ev) => {
             if(ev.Blocks.Count == 0)
@@ -146,7 +145,35 @@ public class Board : MonoBehaviour {
         return Mathf.Max(0f, min);
     }
     
+    HashSet<BlockView> prevHighlight = new HashSet<BlockView>();
+    HashSet<PlaceView> selectedPlaces = new HashSet<PlaceView>();
+    
+    void doHighlight(int x, int z){
+        foreach(PlaceView placeToUnselect in selectedPlaces)
+            placeToUnselect.Selected(false);
+        selectedPlaces.Clear();
+        Transform tranBlock = transforms.Get(x,z);
+        BlockView block = null;
+        if(tranBlock != null) 
+            block = tranBlock.GetComponent<BlockView>();
+        if(block != null && prevHighlight.Contains(block))
+            return;
+        foreach(BlockView prevBlock in prevHighlight)
+            prevBlock.Highlight(false);
+        prevHighlight.Clear();
+        if(block == null)
+            return;        
+        foreach(BlockModel connBlock in board.GetConnected(x,z)){
+            BlockView connBlockView = transforms.Get(connBlock.x,connBlock.z).GetComponent<BlockView>();
+            connBlockView.Highlight(true);
+            prevHighlight.Add(connBlockView);
+        }
+    }
+    
     void doShadow(List<BlockModel> list){
+        foreach(BlockView prevBlock in prevHighlight)
+            prevBlock.Highlight(false);
+        prevHighlight.Clear();
         PlaceView place;
         HashSet<PlaceView> newSelectedPlaces = new HashSet<PlaceView>();
         foreach(BlockModel block in list){
@@ -165,15 +192,13 @@ public class Board : MonoBehaviour {
     }
     
     bool IsOkay(List<BlockModel> list){
-        if(!playing || pause > 0f)
-            return false;
         foreach(BlockModel block in list){
             if(!places.Exist(block.x, block.z))
                 return false;
             if(transforms.Exist(block.x, block.z))
                 return false;
         }
-        return true;        
+        return true;
     }
     
     void Update()
@@ -190,8 +215,11 @@ public class Board : MonoBehaviour {
                 Destroy(tr.gameObject);
             shadow.Clear();
             List<BlockModel> list = current.GetShadow();
-            doShadow(list);
-            if(Input.GetButtonDown("Fire1")){
+            if(current.IsBomb)
+                doHighlight(list[0].x,list[0].z);
+            else
+                doShadow(list);
+            if(Input.GetButtonDown("Fire1") && playing && pause == 0f){
                 if(current.IsBomb)
                     board.Bomb(list[0].x,list[0].z);
                 else if(IsOkay(list))
