@@ -20,7 +20,8 @@ public class Board : MonoBehaviour {
     Grid<PlaceView> places = new Grid<PlaceView>();
     bool gameOver = false;
     float pause = 0f;
-    bool playing = false;
+    
+    public bool Playing { get; set; }
     
     void CreateBlocks(List<BlockModel> blocks, bool init = false){
         foreach(BlockModel block in blocks)
@@ -60,11 +61,7 @@ public class Board : MonoBehaviour {
         places.Add(x, z, instance.Find("Mesh").gameObject.GetComponent<PlaceView>());
         return instance;
     }
-    
-    public void StartGame(){
-        playing = true;
-    }
-    
+        
     private void Start () {
         int boardHeight = GameApplication.GetOptions().BoardHeight;
         int boardWidth = GameApplication.GetOptions().BoardWidth;
@@ -115,7 +112,7 @@ public class Board : MonoBehaviour {
         };
         board.gameOver += (o, ev) => {
             gameOver = true;
-            playing = false;
+            Playing = false;
             gameOverOverlay.SetActive(true); 
             Cursor.visible = true;
         };
@@ -203,7 +200,7 @@ public class Board : MonoBehaviour {
     
     void Update()
     {
-        if(!playing)
+        if(!Playing)
             return;
         
         current.IncRotation(Input.GetAxis("Mouse ScrollWheel"));
@@ -219,7 +216,7 @@ public class Board : MonoBehaviour {
                 doHighlight(list[0].x,list[0].z);
             else
                 doShadow(list);
-            if(Input.GetButtonDown("Fire1") && playing && pause == 0f){
+            if(Input.GetButtonDown("Fire1") && pause <= 0f){
                 if(current.IsBomb)
                     board.Bomb(list[0].x,list[0].z);
                 else if(IsOkay(list))

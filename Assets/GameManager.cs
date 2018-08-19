@@ -4,6 +4,8 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
     public GameCamera gameCamera;
+    public GameObject gameOver;
+    public GameObject gamePause;
     public Board board;
     
     public void BackToMenu () {
@@ -11,11 +13,18 @@ public class GameManager : MonoBehaviour {
     }
     
     void StartGame(){
-        board.StartGame();
+        board.Playing = true;
     }
     
     private void Start () {
         GameApplication.LoadOptions();
         Invoke("StartGame", gameCamera.Duration);
+    }
+    
+    void Update(){
+        if(Input.GetButtonDown("Cancel")){
+            board.Playing = !board.Playing;
+            gamePause.SetActive(!board.Playing);
+        }
     }
 }

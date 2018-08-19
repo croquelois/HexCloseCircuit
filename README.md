@@ -5,6 +5,7 @@ The goal of this puzzle game is to create closed circuits from the randomly give
 
 - refactor logic, move logic to GameManager
 - highscore
+- add menu in the pause screen to change option and quit
 
 ## Long term:
 
