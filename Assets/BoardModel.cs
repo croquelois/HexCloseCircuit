@@ -43,7 +43,7 @@ public class BoardModel {
     PiecesLoader pieces = new PiecesLoader();
     Grid<BlockModel> grid = new Grid<BlockModel>();
     int score = 0;
-    int life = 1;
+    int life = 3;
     float time = 0f;
     float totalTime = 0f;
     float speed = 5f;
@@ -51,6 +51,18 @@ public class BoardModel {
     public float Time {
         get {
             return time;
+        }
+    }
+    
+    public int Life {
+        get {
+            return life;
+        }
+    }
+    
+    public int Score {
+        get {
+            return score;
         }
     }
     
@@ -120,8 +132,6 @@ public class BoardModel {
         newPiece(this, new ListOfBlockEventArgs(pieces.Get()));
         time = 0.0f;
         speed = GameApplication.GetOptions().SpeedFlt;
-        updateLife(this, new LifeEventArgs(life));
-        updateScore(this, new ScoreEventArgs(score));
     }
     
     BlockWithDir GetNext(BlockWithDir prev){

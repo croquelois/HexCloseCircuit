@@ -10,9 +10,7 @@ public class Board : MonoBehaviour {
     public Transform borderPrefab;
     public Transform placePrefab;
     public GameObject gameOverOverlay;
-    public Text score;
-    public Text life;
-    public Slider timer;
+    public InGamePanel ingamePanel;
     BoardModel board = new BoardModel();
     
     Piece current;
@@ -22,7 +20,8 @@ public class Board : MonoBehaviour {
     Grid<Transform> transforms = new Grid<Transform>();
     Grid<PlaceView> places = new Grid<PlaceView>();
     bool gameOver = false;
-    bool pause = true;
+    float pause = 0f;
+    bool playing = false;
     
     void CreateBlocks(List<BlockModel> blocks, bool init = false){
         foreach(BlockModel block in blocks)
@@ -63,8 +62,8 @@ public class Board : MonoBehaviour {
         return instance;
     }
     
-    public void Unpause(){
-        pause = false;
+    public void StartGame(){
+        playing = true;
     }
     
     private void Start () {
@@ -101,22 +100,23 @@ public class Board : MonoBehaviour {
         board.removeBlock += (o, ev) => {
             if(ev.Blocks.Count == 0)
                 return;
-            pause = true;
-            float callbackTime = 0f;
             foreach(BlockModel block in ev.Blocks){
                 BlockView view = transforms.Remove(block.x,block.z).gameObject.GetComponent<BlockView>();
                 view.Explode();
-                callbackTime = view.ExplosionDuration;
+                pause = Mathf.Max(view.ExplosionDuration, pause);
             }
-            Invoke("Unpause", callbackTime);
-            timer.value = board.Time;
+            ingamePanel.SetTimer(board.Time);
         };
         
                 
-        board.updateScore += (o, ev) => { score.text = "Score: " + ev.Score; };
-        board.updateLife += (o, ev) => { life.text = "Life: " + ev.Life; };
-        board.gameOver += (o, ev) => { 
-            gameOver = true; 
+        board.updateScore += (o, ev) => { ingamePanel.SetScore(ev.Score); };
+        board.updateLife  += (o, ev) => { 
+            ingamePanel.SetLife(ev.Life);
+            pause = Mathf.Max(ingamePanel.BlinkSpeed, pause);
+        };
+        board.gameOver += (o, ev) => {
+            gameOver = true;
+            playing = false;
             gameOverOverlay.SetActive(true); 
             Cursor.visible = true;
         };
@@ -130,6 +130,8 @@ public class Board : MonoBehaviour {
         outside.board = this;
         outside.Triangulate(-5,boardWidth+5,-5,boardHeight+5);
         
+        ingamePanel.SetScore(board.Score, true);
+        ingamePanel.SetLife(board.Life, true); 
         board.Start();
         Cursor.visible = false;
     }
@@ -163,7 +165,7 @@ public class Board : MonoBehaviour {
     }
     
     bool IsOkay(List<BlockModel> list){
-        if(pause)
+        if(!playing || pause > 0f)
             return false;
         foreach(BlockModel block in list){
             if(!places.Exist(block.x, block.z))
@@ -176,7 +178,7 @@ public class Board : MonoBehaviour {
     
     void Update()
     {
-        if(gameOver)
+        if(!playing)
             return;
         
         current.IncRotation(Input.GetAxis("Mouse ScrollWheel"));
@@ -197,10 +199,12 @@ public class Board : MonoBehaviour {
             }
         }
         
-        if(pause)
+        if(pause > 0f){
+            pause -= Time.deltaTime;
             return;
+        }
         
         board.Update(Time.deltaTime);
-        timer.value = board.Time;
+        ingamePanel.SetTimer(board.Time);
     }
 }

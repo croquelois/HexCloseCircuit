@@ -10,12 +10,12 @@ public class GameManager : MonoBehaviour {
         SceneManager.LoadScene("main");
     }
     
-    void Unpause(){
-        board.Unpause();
+    void StartGame(){
+        board.StartGame();
     }
     
     private void Start () {
         GameApplication.LoadOptions();
-        Invoke("Unpause", gameCamera.Duration);
+        Invoke("StartGame", gameCamera.Duration);
     }
 }

@@ -12,8 +12,8 @@ public class GameApplication {
     
     static public Options GetOptions(){
         if(options == null){
-            //return new Options();
-            throw new Exception("option not initialized");
+            return new Options();
+            //throw new Exception("option not initialized");
         }
         return options;
     }

@@ -46,19 +46,15 @@ public class BlockViewLiquid : MonoBehaviour {
             Vector3 tmpc = tmp3 * (1.0f - 2f*HexMetrics.carveWidth);
             
             Vector3 v2 = cu + tmp2;
-            Vector3 v3 = cu + tmp3;
             Vector3 v4 = cu + tmp4;
             
             Vector3 c1 = v2 - tmpc;
-            Vector3 c2 = v3 - tmpc;
             Vector3 c3 = v4 - tmpc;
             
             Vector2 tv2 = new Vector2(v2.x,v2.z);
-            Vector2 tv3 = new Vector2(v3.x,v3.z);
             Vector2 tv4 = new Vector2(v4.x,v4.z);
             Vector2 tc1 = new Vector2(c1.x,c1.z);
-            Vector2 tc2 = new Vector2(c2.x,c2.z);
-            Vector2 tc3 = new Vector2(c3.x,c3.z);            
+            Vector2 tc3 = new Vector2(c3.x,c3.z);
             
             AddTriangle(v4, c3, c1, tv4, tc3, tc1);
             AddTriangle(v4, c1, v2, tv4, tc1, tv2);

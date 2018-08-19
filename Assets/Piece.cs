@@ -114,8 +114,6 @@ public class Piece : MonoBehaviour {
     Transform SetBomb(){
         Transform instance = Instantiate(bombPrefab);
         PosAndObject pno = new PosAndObject();
-        float ro = HexMetrics.outerRadius;
-        float ri = HexMetrics.innerRadius;
         pno.pos = instance.localPosition = new Vector3(0f,10f,0f);
         pno.obj = instance;
         instance.SetParent(transform);
