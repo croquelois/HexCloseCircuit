@@ -9,9 +9,6 @@ public class Board : MonoBehaviour {
     public Transform piecePrefab;
     public Transform borderPrefab;
     public Transform placePrefab;
-    public GameObject gameOverOverlay;
-    public InGamePanel ingamePanel;
-    BoardModel board = new BoardModel();
     
     Piece current;
     List<Transform> shadow = new List<Transform>();
@@ -19,9 +16,57 @@ public class Board : MonoBehaviour {
     Grid<Transform> transforms = new Grid<Transform>();
     Grid<PlaceView> places = new Grid<PlaceView>();
     bool gameOver = false;
+    bool playing = false;
     float pause = 0f;
     
-    public bool Playing { get; set; }
+    BoardModel board;
+    
+    public bool Playing { 
+        get {
+            return playing;
+        }
+        set {
+            playing = value;
+            Cursor.visible = !value;
+        }
+    }
+    
+    public float Pause {
+        get {
+            return pause;
+        }
+        set {
+            pause = Mathf.Max(pause, value);
+        }
+    }
+    
+    public void SetBoardModel(BoardModel v){
+        if(board != null)
+            throw new Exception("board model has already been set");
+        if(current == null){
+            current = transform.Find("Current").gameObject.GetComponent<Piece>();
+            if(current == null)
+                throw new Exception("Impossible to found the current pieces object");
+        }
+        board = v;
+        
+        board.removeBlock += (o, ev) => {
+            if(ev.Blocks.Count == 0)
+                return;
+            foreach(BlockModel block in ev.Blocks){
+                BlockView view = transforms.Remove(block.x,block.z).gameObject.GetComponent<BlockView>();
+                view.Explode();
+                Pause = view.ExplosionDuration;
+            }
+        };
+        
+        board.gameOver += (o, ev) => {
+            gameOver = true;
+            Playing = false;
+        };
+        
+        board.newPiece += (o, ev) => { current.New(ev.Blocks); };        
+    }
     
     void CreateBlocks(List<BlockModel> blocks, bool init = false){
         foreach(BlockModel block in blocks)
@@ -83,53 +128,10 @@ public class Board : MonoBehaviour {
         
         for(int z=0;z<boardHeight;z++)
             CreateBorder(boardWidth,z);
-        /*List<BlockModel> blocks = new List<BlockModel>();
-        blocks.Add(new BlockModel(4,5,HexDirection.SW,HexDirection.E));
-        blocks.Add(new BlockModel(5,5,HexDirection.W,HexDirection.SE));
-        blocks.Add(new BlockModel(4,4,HexDirection.SE,HexDirection.NE));
-        blocks.Add(new BlockModel(6,4,HexDirection.SW,HexDirection.NW));
-        blocks.Add(new BlockModel(4,3,HexDirection.NW,HexDirection.E));
-        //blocks.Add(new BlockModel(5,3,HexDirection.NE,HexDirection.W));
-        CreateBlocks(blocks, true);
-        transforms.Get(4,5).GetComponent<BlockView>().Highlight(true);*/
-        
-        board.removeBlock += (o, ev) => {
-            if(ev.Blocks.Count == 0)
-                return;
-            foreach(BlockModel block in ev.Blocks){
-                BlockView view = transforms.Remove(block.x,block.z).gameObject.GetComponent<BlockView>();
-                view.Explode();
-                pause = Mathf.Max(view.ExplosionDuration, pause);
-            }
-            ingamePanel.SetTimer(board.Time);
-        };
-        
-                
-        board.updateScore += (o, ev) => { ingamePanel.SetScore(ev.Score); };
-        board.updateLife  += (o, ev) => { 
-            ingamePanel.SetLife(ev.Life);
-            pause = Mathf.Max(ingamePanel.BlinkSpeed, pause);
-        };
-        board.gameOver += (o, ev) => {
-            gameOver = true;
-            Playing = false;
-            gameOverOverlay.SetActive(true); 
-            Cursor.visible = true;
-        };
-        
-        current = transform.Find("Current").gameObject.GetComponent<Piece>();
-        if(current == null)
-            throw new Exception("Impossible to found the current peices object");
-        board.newPiece += (o, ev) => { current.New(ev.Blocks); };
         
         Outside outside = transform.Find("Outside").gameObject.GetComponent<Outside>();
         outside.board = this;
         outside.Triangulate(-5,boardWidth+5,-5,boardHeight+5);
-        
-        ingamePanel.SetScore(board.Score, true);
-        ingamePanel.SetLife(board.Life, true); 
-        board.Start();
-        Cursor.visible = false;
     }
     
     public float distanceTo(float x, float z){
@@ -230,6 +232,5 @@ public class Board : MonoBehaviour {
         }
         
         board.Update(Time.deltaTime);
-        ingamePanel.SetTimer(board.Time);
     }
 }

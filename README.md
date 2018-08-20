@@ -3,9 +3,8 @@ The goal of this puzzle game is to create closed circuits from the randomly give
 
 ## Short term:
 
-- refactor logic, move logic to GameManager
-- highscore
 - add menu in the pause screen to change option and quit
+- highscore
 
 ## Long term:
 

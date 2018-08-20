@@ -32,6 +32,13 @@ public class LifeEventArgs : EventArgs {
     }
 }
 
+public class TimeEventArgs : EventArgs {
+    public float Time { get; private set; }
+    public TimeEventArgs(float time){
+        Time = time;
+    }
+}
+
 public class ListOfBlockEventArgs : EventArgs {
     public List<BlockModel> Blocks { get; private set; }
     public ListOfBlockEventArgs(List<BlockModel> blocks){
@@ -52,11 +59,21 @@ public class BoardModel {
         get {
             return time;
         }
+        set {
+            time = value;
+            updateTimer(this, new TimeEventArgs(value));
+        }
     }
     
     public int Life {
         get {
             return life;
+        }
+        set {
+            life = value;
+            updateLife(this, new LifeEventArgs(value));
+            if(value == 0)
+                gameOver(this, new EventArgs());
         }
     }
     
@@ -64,11 +81,16 @@ public class BoardModel {
         get {
             return score;
         }
+        set {
+            score = value;
+            updateScore(this, new ScoreEventArgs(score));
+        }
     }
     
     public event EventHandler<EventArgs> loopCompleted = delegate {};
     public event EventHandler<ScoreEventArgs> updateScore = delegate {};
     public event EventHandler<LifeEventArgs> updateLife = delegate {};
+    public event EventHandler<TimeEventArgs> updateTimer = delegate {};
     public event EventHandler<ListOfBlockEventArgs> removeBlock = delegate {};
     public event EventHandler<ListOfBlockEventArgs> newPiece = delegate {};
     public event EventHandler<EventArgs> gameOver = delegate {};
@@ -97,7 +119,7 @@ public class BoardModel {
         CheckConnectionResult res = CheckConnection(x,z);
         Remove(res.blocks);
         newPiece(this, new ListOfBlockEventArgs(pieces.Get()));
-        time = 0.0f;
+        Time = 0.0f;
     }
     
     public void Push(List<BlockModel> blocks){
@@ -105,36 +127,34 @@ public class BoardModel {
         foreach(BlockModel block in blocks){
             CheckConnectionResult res = CheckConnection(block.x,block.z);
             if(res.isLoop){
-                score += nbBlockToScoreIncrease(res.blocks.Count);
+                Score += nbBlockToScoreIncrease(res.blocks.Count);
                 Remove(res.blocks);
                 loopCompleted(this, new EventArgs());
-                updateScore(this, new ScoreEventArgs(score));                
             }
         }
         newPiece(this, new ListOfBlockEventArgs(pieces.Get()));
-        time = 0.0f;
+        Time = 0.0f;
     }
     
     public void Update(float dt){
-        if(life == 0)
+        if(Life == 0)
             return;
-        time += dt/(speed*Mathf.Pow(0.995f,totalTime));
+        float newTime = Time + dt/(speed*Mathf.Pow(0.995f,totalTime));
         totalTime += dt;
         
-        if(time > 1f){
-            life--;
-            updateLife(this, new LifeEventArgs(life));
-            if(life == 0)
-                gameOver(this, new EventArgs());
+        if(newTime > 1f){
+            Life--;
             newPiece(this, new ListOfBlockEventArgs(pieces.Get()));
-            time = 0.0f;
+            Time = 0.0f;
+        }else{
+            Time = newTime;
         }
     }
     
     public void Start(){
         pieces.Load();
         newPiece(this, new ListOfBlockEventArgs(pieces.Get()));
-        time = 0.0f;
+        Time = 0.0f;
         speed = GameApplication.GetOptions().SpeedFlt;
     }
     

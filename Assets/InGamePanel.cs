@@ -39,9 +39,6 @@ public class InGamePanel : MonoBehaviour {
     }
     
     void Start () {
-        score.text = "Score: " + 0;
-        life.text = "Life: " + 0;
-        timer.value = 1f;
     }
 
     void Update () {
