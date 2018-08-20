@@ -56,17 +56,20 @@
      <Compile Include="Assets\GameApplication.cs" />
      <Compile Include="Assets\GameCamera.cs" />
      <Compile Include="Assets\GameManager.cs" />
+     <Compile Include="Assets\GamePause.cs" />
      <Compile Include="Assets\Grid.cs" />
      <Compile Include="Assets\HexEnum.cs" />
      <Compile Include="Assets\HexMetrics.cs" />
      <Compile Include="Assets\InGamePanel.cs" />
      <Compile Include="Assets\MenuManager.cs" />
+     <Compile Include="Assets\OptionMenu.cs" />
      <Compile Include="Assets\Options.cs" />
      <Compile Include="Assets\Outside.cs" />
      <Compile Include="Assets\Piece.cs" />
      <Compile Include="Assets\PiecesLoader.cs" />
      <Compile Include="Assets\PlaceView.cs" />
      <Compile Include="Assets\Pos.cs" />
+     <Compile Include="Assets\StartMenu.cs" />
      <None Include="Assets\Shaders\liquid.shader" />
  <Reference Include="UnityEngine.UI">
  <HintPath>F:/unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>

@@ -3,15 +3,14 @@ The goal of this puzzle game is to create closed circuits from the randomly give
 
 ## Short term:
 
-- add menu in the pause screen to change option and quit
 - highscore
+- music, sound effect
 
 ## Long term:
 
 - level
 - game modes
 - coherent tasteful graphic style
-- music, sound effect
 
 ## Snapshot:
 

@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour {
     public GameCamera gameCamera;
     public GameObject gameOver;
-    public GameObject gamePause;
+    public GamePause gamePause;
     public Board boardView;
     public InGamePanel ingamePanel;
     BoardModel boardModel = new BoardModel();
@@ -36,14 +36,15 @@ public class GameManager : MonoBehaviour {
         ingamePanel.SetScore(boardModel.Score, true);
         ingamePanel.SetLife(boardModel.Life, true);
         ingamePanel.SetTimer(boardModel.Time);
+        gamePause.goingBack += (o,ev) => { boardView.Playing = true; };
         boardModel.Start();
         Invoke("StartGame", gameCamera.Duration);
     }
     
     void Update(){
-        if(Input.GetButtonDown("Cancel")){
-            boardView.Playing = !boardView.Playing;
-            gamePause.SetActive(!boardView.Playing);
+        if(Input.GetButtonDown("Cancel") && boardView.Playing){
+            boardView.Playing = false;
+            gamePause.gameObject.SetActive(true);
         }
     }
 }
