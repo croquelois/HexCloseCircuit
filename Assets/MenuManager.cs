@@ -8,10 +8,16 @@ using UnityEngine.UI;
 public class MenuManager : MonoBehaviour {
     public GameObject mainMenu;
     public StartMenu startMenu;
+    public HighScoreMenu highScoreMenu;
     public OptionMenu optionMenu;
         
     public void GoToStartMenu(){
         startMenu.gameObject.SetActive(true);
+        mainMenu.SetActive(false);
+    }
+    
+    public void GoToHighScoreMenu(){
+        highScoreMenu.gameObject.SetActive(true);
         mainMenu.SetActive(false);
     }
     
@@ -23,10 +29,12 @@ public class MenuManager : MonoBehaviour {
     private void Start(){
         GameApplication.LoadOptions();
         Options options = GameApplication.GetOptions();
-        optionMenu.Options = options;
         startMenu.Options = options;
-        optionMenu.goingBack += (o,ev) => { mainMenu.SetActive(true); };
+        highScoreMenu.Options = options;
+        optionMenu.Options = options;
         startMenu.goingBack += (o,ev) => { mainMenu.SetActive(true); };
+        highScoreMenu.goingBack += (o,ev) => { mainMenu.SetActive(true); };
+        optionMenu.goingBack += (o,ev) => { mainMenu.SetActive(true); };
     }
     
     public void Quit(){

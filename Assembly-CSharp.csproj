@@ -60,6 +60,9 @@
      <Compile Include="Assets\Grid.cs" />
      <Compile Include="Assets\HexEnum.cs" />
      <Compile Include="Assets\HexMetrics.cs" />
+     <Compile Include="Assets\HighScoreMenu.cs" />
+     <Compile Include="Assets\HighScoreView.cs" />
+     <Compile Include="Assets\HighScores.cs" />
      <Compile Include="Assets\InGamePanel.cs" />
      <Compile Include="Assets\MenuManager.cs" />
      <Compile Include="Assets\OptionMenu.cs" />

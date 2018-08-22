@@ -16,7 +16,7 @@ public class OptionMenu : MonoBehaviour {
     Options options;    
     
     public void Back(){
-        applyUI2Options();
+        ApplyUI2Options();
         gameObject.SetActive(false);
         goingBack(this,new EventArgs());
     }
@@ -24,11 +24,11 @@ public class OptionMenu : MonoBehaviour {
     public Options Options {
         set { 
             options = value;
-            applyOption2UI();
+            ApplyOption2UI();
         }
     }
         
-    void applyUI2Options(){
+    void ApplyUI2Options(){
         if(wRotationSpeed.value == 1f)
             options.rotationSpeed = 0f;
         else
@@ -39,7 +39,7 @@ public class OptionMenu : MonoBehaviour {
         options.Save();
     }
     
-    void applyOption2UI(){
+    void ApplyOption2UI(){
         if(options.rotationSpeed == 0f)
             wRotationSpeed.value = 1f;
         else
