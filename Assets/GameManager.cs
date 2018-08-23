@@ -4,16 +4,12 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
     public GameCamera gameCamera;
-    public GameObject gameOver;
+    public GameOver gameOver;
     public GamePause gamePause;
     public Board boardView;
     public InGamePanel ingamePanel;
     BoardModel boardModel = new BoardModel();
-    
-    public void BackToMenu () {
-        SceneManager.LoadScene("main");
-    }
-    
+        
     void StartGame(){
         boardView.Playing = true;
     }
@@ -21,7 +17,10 @@ public class GameManager : MonoBehaviour {
     private void Start () {
         GameApplication.LoadOptions();
         boardView.SetBoardModel(boardModel);
-        boardModel.gameOver += (o, ev) => { gameOver.SetActive(true); };
+        boardModel.gameOver += (o, ev) => {
+            gameOver.SetScore(boardModel.Score);
+            gameOver.gameObject.SetActive(true); 
+        };
         boardModel.updateScore += (o, ev) => { 
             ingamePanel.SetScore(ev.Score);
             boardView.Pause = ingamePanel.BlinkSpeed;

@@ -13,7 +13,7 @@ public class OptionMenu : MonoBehaviour {
     
     public event EventHandler<EventArgs> goingBack = delegate {};
     
-    Options options;    
+    Options options;
     
     public void Back(){
         ApplyUI2Options();

@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.IO;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,7 +12,6 @@ public class HighScoreMenu : MonoBehaviour {
     public HighScoreView view;
     public event EventHandler<EventArgs> goingBack = delegate {};
     
-    HighScores highScores;
     Options options;
     
     public void Back(){
@@ -31,14 +29,12 @@ public class HighScoreMenu : MonoBehaviour {
         string board = (new List<string>{"small","medium","large"})[wBoard.value];
         string piecePicker = (new List<string>{"simple","complex","dude?"})[wPieces.value];
         string speed = (new List<string>{"slow","normal","fast"})[wSpeed.value];
-        List<HighScore> list = highScores.Get(board,piecePicker,speed);
-        view.Set(list);
+        view.ViewOnly(board,piecePicker,speed);
     }
     
     public Options Options {
         set { 
             options = value;
-            highScores = new HighScores(Path.Combine(Application.persistentDataPath, "scores.json"));
             ApplyOption2UI();
             OnChange();
         }
