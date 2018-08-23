@@ -14,17 +14,30 @@ public class HighScore {
     }
 }
 
-[System.Serializable]
 public class HighScores {
     string path = null;
     Dictionary<string,List<HighScore>> allHighScores;
     
     public HighScores(string path){
+        List<HighScore> scores;
+        allHighScores = new Dictionary<string,List<HighScore>>();
+        string str;
         try {
-            allHighScores = JsonUtility.FromJson<Dictionary<string,List<HighScore>>>(File.ReadAllText(path));
+            str = File.ReadAllText(path);
+            string[] lines = str.Split(new char[]{'\n'});
+            foreach(string line in lines){
+                string[] part = line.Split(new char[]{' '},3);
+                string key = part[0];
+                int score = Int32.Parse(part[1]);
+                string name = part[2];
+                if(!allHighScores.TryGetValue(key, out scores)){
+                    scores = new List<HighScore>();
+                    allHighScores[key] = scores;
+                }
+                allHighScores[key].Add(new HighScore(name, score));
+            }
         }catch(Exception ex){
             Debug.Log(ex);
-            allHighScores = new Dictionary<string,List<HighScore>>();
             //allHighScores["medium-complex-normal"] = new List<HighScore>{ new HighScore("Croq",150), new HighScore("Foo",100) };
         }
         this.path = path;
@@ -36,11 +49,9 @@ public class HighScores {
     public int GetAndAdd(string boardSize, string piecePicker, string speed, int score, out List<HighScore> scores){
         scores = Get(boardSize,piecePicker,speed);
         int i;
-        Debug.Log(scores.Count);
         for(i=0;i<scores.Count;i++)
             if(scores[i].Score < score)
                 break;
-        Debug.Log(i);
         if(i == 10)
             return -1;
         if(scores.Count < 10)
@@ -69,6 +80,12 @@ public class HighScores {
     }
     
     public void Save(){
-        File.WriteAllText(this.path, JsonUtility.ToJson(allHighScores));
+        List<string> lines = new List<string>();
+        foreach(KeyValuePair<string, List<HighScore>> entry in allHighScores){
+            string key = entry.Key;
+            foreach(HighScore hs in entry.Value)
+                lines.Add(key + " " + hs.Score + " " + hs.Name);
+        }
+        File.WriteAllText(this.path, String.Join("\n",lines.ToArray()));
     }
 }
