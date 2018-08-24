@@ -3,12 +3,22 @@ The goal of this puzzle game is to create closed circuits from the randomly give
 
 ## Short term:
 
-- highscore
-- music, sound effect
+- music: Menu
+- music: In Game
+- music: Game Over - Highscore
+- music: Game Over - No highscore
+- music: Game Pause
+
+- sound: put pieces down
+- sound: bomb
+- sound: finish loop
+- sound: lose life
+- sound: click button
 
 ## Long term:
 
 - level
+- better menu
 - game modes
 - coherent tasteful graphic style
 

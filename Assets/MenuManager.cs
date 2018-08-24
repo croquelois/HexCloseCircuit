@@ -4,8 +4,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Audio;
 
 public class MenuManager : MonoBehaviour {
+    public AudioSource audioClick;
+    public AudioMixer mixer;
     public GameObject mainMenu;
     public StartMenu startMenu;
     public HighScoreMenu highScoreMenu;
@@ -32,9 +35,11 @@ public class MenuManager : MonoBehaviour {
         startMenu.Options = options;
         highScoreMenu.Options = options;
         optionMenu.Options = options;
+        mixer.SetFloat("SoundVolume",options.SoundVolume);
+        mixer.SetFloat("MusicVolume",options.MusicVolume);
         startMenu.goingBack += (o,ev) => { mainMenu.SetActive(true); };
         highScoreMenu.goingBack += (o,ev) => { mainMenu.SetActive(true); };
-        optionMenu.goingBack += (o,ev) => { mainMenu.SetActive(true); };
+        optionMenu.goingBack += (o,ev) => { audioClick.Play(); mainMenu.SetActive(true); };
     }
     
     public void Quit(){
@@ -43,5 +48,8 @@ public class MenuManager : MonoBehaviour {
         #else
             Application.Quit();
         #endif
+    }
+    
+    void Update(){
     }
 }

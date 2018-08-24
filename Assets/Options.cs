@@ -16,6 +16,22 @@ public class Options {
     public float soundLevel = 0.5f;
     public float musicLevel = 0.5f;
     
+    float level2volume(float v){
+        return 25f*Mathf.Log(0.1f+v*0.9f);
+    }
+    
+    public float MusicVolume {
+        get {
+            return level2volume(musicLevel);
+        }
+    }
+    
+    public float SoundVolume {
+        get {
+            return level2volume(soundLevel);
+        }
+    }
+    
     public float SpeedFlt {
         get {
             return (new Dictionary<string, float> {
