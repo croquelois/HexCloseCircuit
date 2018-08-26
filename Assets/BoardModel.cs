@@ -143,7 +143,7 @@ public class BoardModel {
     public void Update(float dt){
         if(Life == 0)
             return;
-        float newTime = Time + dt/(speed*Mathf.Pow(0.995f,totalTime));
+        float newTime = Time + dt/speed; // Acceleration: *Mathf.Pow(0.995f,totalTime));
         totalTime += dt;
         
         if(newTime > 1f){

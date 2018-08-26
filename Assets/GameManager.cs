@@ -3,11 +3,6 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
-    public AudioSource audioLoop;
-    public AudioSource audioPlace;
-    public AudioSource audioBomb;
-    public AudioSource audioLife;
-    public AudioSource audioPlaceBad;
     
     public GameCamera gameCamera;
     public GameOver gameOver;
@@ -44,11 +39,6 @@ public class GameManager : MonoBehaviour {
         ingamePanel.SetTimer(boardModel.Time);
         gamePause.goingBack += (o,ev) => { boardView.Playing = true; };
         boardModel.Start();
-        boardModel.loopCompleted += (o, ev) => { audioLoop.Play(); };
-        boardModel.updateLife += (o, ev) => { audioLife.Play(); };
-        boardModel.placePiece += (o, ev) => { audioPlace.Play(); };
-        boardModel.placeBomb += (o, ev) => { audioBomb.Play(); };
-        boardView.actionRejected += (o, ev) => { audioPlaceBad.Play(); };
         Invoke("StartGame", gameCamera.Duration);
     }
     

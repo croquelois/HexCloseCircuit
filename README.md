@@ -3,7 +3,6 @@ The goal of this puzzle game is to create closed circuits from the randomly give
 
 ## Short term:
 
-- refactorisation of audio sound when ingame (move it to boardView)
 - game modes
 - credit screen
 

@@ -10,6 +10,12 @@ public class Board : MonoBehaviour {
     public Transform borderPrefab;
     public Transform placePrefab;
     
+    public AudioSource audioLoop;
+    public AudioSource audioPlace;
+    public AudioSource audioBomb;
+    public AudioSource audioLife;
+    public AudioSource audioPlaceBad;
+    
     public AudioSource musicInGame;
     
     public event EventHandler<EventArgs> actionRejected = delegate {};
@@ -73,7 +79,13 @@ public class Board : MonoBehaviour {
             Playing = false;
         };
         
-        board.newPiece += (o, ev) => { current.New(ev.Blocks); };        
+        board.newPiece += (o, ev) => { current.New(ev.Blocks); };
+        
+        board.loopCompleted += (o, ev) => { audioLoop.Play(); };
+        board.updateLife += (o, ev) => { 
+            musicInGame.Play();
+            audioLife.Play(); 
+        };
     }
     
     void CreateBlocks(List<BlockModel> blocks, bool init = false){
@@ -227,12 +239,15 @@ public class Board : MonoBehaviour {
             else
                 doShadow(list);
             if(Input.GetButtonDown("Fire1") && pause <= 0f){
-                if(current.IsBomb)
+                if(current.IsBomb){
                     board.Bomb(list[0].x,list[0].z);
-                else if(IsOkay(list))
+                    audioBomb.Play();
+                }else if(IsOkay(list)){
                     CreateBlocks(list);
-                else
-                    actionRejected(this, new EventArgs());
+                    audioPlace.Play();
+                }else{
+                    audioPlaceBad.Play();
+                }
             }
         }
         
