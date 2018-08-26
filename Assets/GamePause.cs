@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class GamePause : MonoBehaviour {
     public GameObject mainMenu;
     public OptionMenu optionMenu;
+    public AudioSource musicPause;
     
     public event EventHandler<EventArgs> goingBack = delegate {};
             
@@ -17,17 +18,23 @@ public class GamePause : MonoBehaviour {
     }
     
     public void BackToGame(){
+        musicPause.Stop();
         gameObject.SetActive(false);
         goingBack(this,new EventArgs());
     }
     
     public void QuitToMenu(){
+        musicPause.Stop();
         SceneManager.LoadScene("main");
     }
     
     void Start(){
         optionMenu.Options = GameApplication.GetOptions();
         optionMenu.goingBack += (o,ev) => { mainMenu.SetActive(true); };
+    }
+    
+    void OnEnable(){
+        musicPause.Play();
     }
     
     void Update(){

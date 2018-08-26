@@ -10,6 +10,8 @@ public class Board : MonoBehaviour {
     public Transform borderPrefab;
     public Transform placePrefab;
     
+    public AudioSource musicInGame;
+    
     public event EventHandler<EventArgs> actionRejected = delegate {};
     
     Piece current;
@@ -30,6 +32,10 @@ public class Board : MonoBehaviour {
         set {
             playing = value;
             Cursor.visible = !value;
+            if(value)
+                musicInGame.Play();
+            else
+                musicInGame.Pause();
         }
     }
     

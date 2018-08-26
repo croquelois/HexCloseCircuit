@@ -3,17 +3,14 @@ The goal of this puzzle game is to create closed circuits from the randomly give
 
 ## Short term:
 
-- music: Menu
-- music: In Game
-- music: Game Over - Highscore
-- music: Game Over - No highscore
-- music: Game Pause
+- refactorisation of audio sound when ingame (move it to boardView)
+- game modes
+- credit screen
 
 ## Long term:
 
 - level
 - better menu
-- game modes
 - coherent tasteful graphic style
 
 ## Snapshot:

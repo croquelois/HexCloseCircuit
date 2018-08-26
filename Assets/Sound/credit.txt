@@ -1,0 +1,3 @@
+song18_0, 019_seven_and_eight => https://www.patreon.com/cynicmusic
+placeOk, placeBad, loseLife => https://freesound.org/people/OwlStorm/
+Next to you => https://opengameart.org/users/joth
