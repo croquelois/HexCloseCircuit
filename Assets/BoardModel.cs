@@ -88,6 +88,8 @@ public class BoardModel {
     }
     
     public event EventHandler<EventArgs> loopCompleted = delegate {};
+    public event EventHandler<EventArgs> placePiece = delegate {};
+    public event EventHandler<EventArgs> placeBomb = delegate {};
     public event EventHandler<ScoreEventArgs> updateScore = delegate {};
     public event EventHandler<LifeEventArgs> updateLife = delegate {};
     public event EventHandler<TimeEventArgs> updateTimer = delegate {};
@@ -120,6 +122,7 @@ public class BoardModel {
         Remove(res.blocks);
         newPiece(this, new ListOfBlockEventArgs(pieces.Get()));
         Time = 0.0f;
+        placeBomb(this, new EventArgs());
     }
     
     public void Push(List<BlockModel> blocks){
@@ -134,6 +137,7 @@ public class BoardModel {
         }
         newPiece(this, new ListOfBlockEventArgs(pieces.Get()));
         Time = 0.0f;
+        placePiece(this, new EventArgs());
     }
     
     public void Update(float dt){

@@ -10,6 +10,8 @@ public class Board : MonoBehaviour {
     public Transform borderPrefab;
     public Transform placePrefab;
     
+    public event EventHandler<EventArgs> actionRejected = delegate {};
+    
     Piece current;
     List<Transform> shadow = new List<Transform>();
     List<Vector2> validPositions = new List<Vector2>();
@@ -223,6 +225,8 @@ public class Board : MonoBehaviour {
                     board.Bomb(list[0].x,list[0].z);
                 else if(IsOkay(list))
                     CreateBlocks(list);
+                else
+                    actionRejected(this, new EventArgs());
             }
         }
         

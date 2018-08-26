@@ -9,12 +9,6 @@ The goal of this puzzle game is to create closed circuits from the randomly give
 - music: Game Over - No highscore
 - music: Game Pause
 
-- sound: put pieces down
-- sound: bomb
-- sound: finish loop
-- sound: lose life
-- sound: click button
-
 ## Long term:
 
 - level
