@@ -51,6 +51,7 @@
      <Compile Include="Assets\BlockViewLiquid.cs" />
      <Compile Include="Assets\BlockViewSolid.cs" />
      <Compile Include="Assets\Board.cs" />
+     <Compile Include="Assets\BoardLoopFactory.cs" />
      <Compile Include="Assets\BoardModel.cs" />
      <Compile Include="Assets\BoardViewBorder.cs" />
      <Compile Include="Assets\GameApplication.cs" />
@@ -69,6 +70,7 @@
      <Compile Include="Assets\OptionMenu.cs" />
      <Compile Include="Assets\Options.cs" />
      <Compile Include="Assets\Outside.cs" />
+     <Compile Include="Assets\OutsideStep.cs" />
      <Compile Include="Assets\Piece.cs" />
      <Compile Include="Assets\PiecesLoader.cs" />
      <Compile Include="Assets\PlaceView.cs" />

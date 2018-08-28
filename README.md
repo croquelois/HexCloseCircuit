@@ -4,7 +4,6 @@ The goal of this puzzle game is to create closed circuits from the randomly give
 ## Short term:
 
 - game modes
-- credit screen
 
 ## Long term:
 
@@ -12,7 +11,18 @@ The goal of this puzzle game is to create closed circuits from the randomly give
 - better menu
 - coherent tasteful graphic style
 
+## Credit:
+
+- music (Menu & InGame): https://www.patreon.com/cynicmusic
+- music (GameOver): https://opengameart.org/users/joth
+- sound:  https://freesound.org/people/OwlStorm/
+- textures: https://3dtextures.me/
+
 ## Snapshot:
+
+2018-08-29: I've replaced the outside with some step... not sure it's better, not sure it's worse
+
+![2018-08-29](screenshot-20180829.png)
 
 2018-08-18: I've added the bomb
 

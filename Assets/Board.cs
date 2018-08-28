@@ -17,9 +17,7 @@ public class Board : MonoBehaviour {
     public AudioSource audioPlaceBad;
     
     public AudioSource musicInGame;
-    
-    public event EventHandler<EventArgs> actionRejected = delegate {};
-    
+        
     Piece current;
     List<Transform> shadow = new List<Transform>();
     List<Vector2> validPositions = new List<Vector2>();
@@ -149,8 +147,7 @@ public class Board : MonoBehaviour {
         for(int z=0;z<boardHeight;z++)
             CreateBorder(boardWidth,z);
         
-        Outside outside = transform.Find("Outside").gameObject.GetComponent<Outside>();
-        outside.board = this;
+        OutsideStep outside = transform.Find("Outside").gameObject.GetComponent<OutsideStep>();
         outside.Triangulate(-5,boardWidth+5,-5,boardHeight+5);
     }
     
