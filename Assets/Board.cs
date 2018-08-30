@@ -52,6 +52,13 @@ public class Board : MonoBehaviour {
         }
     }
     
+    public List<Pos> Places {
+        set {
+            foreach(Pos pos in value)
+                CreatePlace(pos.x, pos.z);
+        }
+    }
+    
     public void SetBoardModel(BoardModel v){
         if(board != null)
             throw new Exception("board model has already been set");
@@ -86,7 +93,7 @@ public class Board : MonoBehaviour {
         };
     }
     
-    void CreateBlocks(List<BlockModel> blocks, bool init = false){
+    public void CreateBlocks(List<BlockModel> blocks, bool init = false){
         foreach(BlockModel block in blocks)
             transforms.Add(block.x, block.z, CreateBlock(block));
         if(init)
@@ -105,15 +112,6 @@ public class Board : MonoBehaviour {
         return instance;
     }
     
-    Transform CreateBorder(int x, int z){
-        /*Transform instance = Instantiate(borderPrefab);
-        float ro = HexMetrics.outerRadius;
-        float ri = HexMetrics.innerRadius;
-        instance.localPosition = new Vector3(2f*ri*(((float)x)+(z%2==0?0.0f:0.5f)),0f,1.5f*ro*(float)z);
-        return instance;*/
-        return null;
-    }
-    
     Transform CreatePlace(int x, int z){
         Transform instance = Instantiate(placePrefab);
         float ro = HexMetrics.outerRadius;
@@ -123,32 +121,6 @@ public class Board : MonoBehaviour {
         validPositions.Add(pos);
         places.Add(x, z, instance.Find("Mesh").gameObject.GetComponent<PlaceView>());
         return instance;
-    }
-        
-    private void Start () {
-        int boardHeight = GameApplication.GetOptions().BoardHeight;
-        int boardWidth = GameApplication.GetOptions().BoardWidth;
-        /*
-        BoardModelTest test = new BoardModelTest();
-        test.Main();
-        return;
-        */
-        
-        for(int z=-1;z<boardHeight+1;z++)
-            CreateBorder(-1,z);
-        for(int x=0;x<boardWidth;x++){
-            CreateBorder(x,-1);
-            for(int z=0;z<boardHeight;z++){
-                CreatePlace(x,z);
-            }
-            CreateBorder(x,boardHeight);
-        }
-        
-        for(int z=0;z<boardHeight;z++)
-            CreateBorder(boardWidth,z);
-        
-        OutsideStep outside = transform.Find("Outside").gameObject.GetComponent<OutsideStep>();
-        outside.Triangulate(-5,boardWidth+5,-5,boardHeight+5);
     }
     
     public float distanceTo(float x, float z){

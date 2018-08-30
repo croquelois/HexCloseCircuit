@@ -1,4 +1,6 @@
-﻿public enum HexDirection {
+﻿using UnityEngine;
+
+public enum HexDirection {
     NE, E, SE, SW, W, NW
 }
 
@@ -19,5 +21,11 @@ public static class HexDirectionExtensions {
     public static HexDirection Next2(this HexDirection direction) {
         direction += 2;
         return direction <= HexDirection.NW ? direction : (direction - 6);
+    }
+}
+
+public static class HexDirectionHelper {
+    public static HexDirection Random(){
+        return (HexDirection) UnityEngine.Random.Range(0,6);
     }
 }

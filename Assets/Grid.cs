@@ -2,7 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Grid<T> where T : class {
-    Dictionary<int,Dictionary<int,T>> grid = new Dictionary<int,Dictionary<int,T>>();
+    Dictionary<int,Dictionary<int,T>> grid;
+    
+    public Grid(){
+        grid = new Dictionary<int,Dictionary<int,T>>();
+    }
+    
+    public Grid(Grid<T> g){
+        grid = new Dictionary<int,Dictionary<int,T>>(g.grid);
+        foreach(KeyValuePair<int, Dictionary<int,T>> row in g.grid)
+            grid[row.Key] = new Dictionary<int,T>(row.Value);
+    }
     
     public T Remove(int x, int y){
         Dictionary<int,T> col;
@@ -40,6 +50,10 @@ public class Grid<T> where T : class {
         AddIntern(x, y, t, true);
     }
     
+    public void Clear(){
+        grid = new Dictionary<int,Dictionary<int,T>>();
+    }
+    
     public T Get(int x, int y){
         Dictionary<int,T> col;
         if(!grid.TryGetValue(x, out col))
@@ -55,5 +69,13 @@ public class Grid<T> where T : class {
         if(!grid.TryGetValue(x, out col))
             return false;
         return col.ContainsKey(y);
+    }
+    
+    public List<T> GetList(){
+        List<T> list = new List<T>();
+        foreach(KeyValuePair<int, Dictionary<int,T>> row in grid)
+            foreach(KeyValuePair<int, T> cell in row.Value)
+                list.Add(cell.Value);
+        return list;
     }
 }

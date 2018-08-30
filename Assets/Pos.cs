@@ -1,7 +1,7 @@
 ﻿
 public class Pos {
-    int x;
-    int z;
+    public int x;
+    public int z;
     
     public Pos(int x, int z){
         this.x = x;

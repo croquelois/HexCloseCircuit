@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
@@ -7,6 +8,7 @@ public class GameManager : MonoBehaviour {
     public GameCamera gameCamera;
     public GameOver gameOver;
     public GamePause gamePause;
+    public OutsideStep outside;
     public Board boardView;
     public InGamePanel ingamePanel;
     
@@ -19,6 +21,10 @@ public class GameManager : MonoBehaviour {
     private void Start () {
         GameApplication.LoadOptions();
         boardView.SetBoardModel(boardModel);
+        
+        int boardHeight = GameApplication.GetOptions().BoardHeight;
+        int boardWidth = GameApplication.GetOptions().BoardWidth;
+        
         boardModel.gameOver += (o, ev) => {
             gameOver.SetScore(boardModel.Score);
             gameOver.gameObject.SetActive(true); 
@@ -38,6 +44,25 @@ public class GameManager : MonoBehaviour {
         ingamePanel.SetLife(boardModel.Life, true);
         ingamePanel.SetTimer(boardModel.Time);
         gamePause.goingBack += (o,ev) => { boardView.Playing = true; };
+        
+        /*
+        BoardModelTest test = new BoardModelTest();
+        test.Main();
+        return;
+        */
+        List<Pos> places = new List<Pos>();
+        for(int x=0;x<boardWidth;x++)
+            for(int z=0;z<boardHeight;z++)
+                places.Add(new Pos(x,z));
+        boardView.Places = places;
+        
+        /*
+        BoardLoopFactory factory = new BoardLoopFactory(places);
+        List<BlockModel> list = factory.GenerateLoop();
+        boardView.CreateBlocks(list, true); // that's ugly as hell
+        boardModel.Add(list);
+        */
+        outside.Triangulate(-5,boardWidth+5,-5,boardHeight+5);
         boardModel.Start();
         Invoke("StartGame", gameCamera.Duration);
     }
