@@ -103,6 +103,7 @@ public class Piece : MonoBehaviour {
             center /= elem.Count;
             foreach(PosAndObject pno in elem){
                 pno.pos -= center;
+                pno.pos.y = 1f;
                 pno.obj.localPosition = pno.pos;
             }
         }
@@ -129,7 +130,7 @@ public class Piece : MonoBehaviour {
         float ro = HexMetrics.outerRadius;
         float ri = HexMetrics.innerRadius;
         PosAndObject pno = new PosAndObject();
-        pno.pos = instance.localPosition = new Vector3(2f*ri*(((float)model.x)+(model.z%2==0?0.0f:0.5f)),0.5f,1.5f*ro*(float)model.z);
+        pno.pos = instance.localPosition = new Vector3(2f*ri*(((float)model.x)+(model.z%2==0?0.0f:0.5f)),0.0f,1.5f*ro*(float)model.z);
         pno.obj = instance;
         pno.model = model;
         instance.SetParent(transform);
